@@ -1,6 +1,6 @@
 {
   "name": "@awcms-lynx/app",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "The ReactLynx application shared by every target: screens, components, i18n, design tokens and the startApp() entry each bundle calls.",
