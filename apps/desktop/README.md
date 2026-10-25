@@ -37,9 +37,15 @@ Bun skips dependency `postinstall` scripts unless they are trusted. Two matter h
 
 - `@lynx-js/lynxtron` downloads the runtime. Not needed: the CLI extracts the installed
   runtime package on first use (verified).
-- `@lynx-js/lynxtron-builder` patches `electron-builder` for Lynxtron (`patch.js`). **Needed for
-  `pack`.** Run `bun pm trust @lynx-js/lynxtron-builder` once (it records the package in the
-  root `package.json` `trustedDependencies`), then `bun install` again.
+- `@lynx-js/lynxtron-builder` patches `electron-builder` for Lynxtron (`patch.js`, via
+  `patch-package`). **Needed for `pack`, and deliberately not trusted in the root
+  `package.json`:** `patch-package` looks for `app-builder-lib` and `dmg-builder` at the root
+  `node_modules/`, which Bun's default isolated linker does not create, so trusting it makes
+  `bun install` fail (observed in CI on PR #1: "Patch file found for package app-builder-lib
+  which is not present at node_modules/app-builder-lib"). To package, on the macOS or Windows
+  build machine: `bun install --linker hoisted`, then `bun pm trust @lynx-js/lynxtron-builder`,
+  then `bun run --cwd apps/desktop pack`. This path is **not verified** here (see below); do not
+  commit the resulting `trustedDependencies` change.
 
 ## How it works
 
