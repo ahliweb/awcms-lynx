@@ -1,0 +1,16 @@
+{
+  "name": "@awcms-lynx/client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Typed HTTP client for the AWCMS family backends (ahliweb/awcms staff app, ahliweb/awcms-one commerce) that runs in the Lynx background thread: no URL, URLSearchParams, Intl or Node APIs.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  }
+}
