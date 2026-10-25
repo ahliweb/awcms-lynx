@@ -1,0 +1,41 @@
+# Reference snippet — merge into your Podfile. Derived from
+# integrating-lynx-demo-projects/ios/HelloLynxSwift/Podfile (Apache-2.0) and
+# guide/start/fragments/ios/integrating-lynx-with-existing-app-ios.mdx.
+#
+# Versions: the Lynx docs (docs/public/version.json) pin Lynx 4.1.0 / PrimJS 4.1.1.
+# The sample's Podfile uses the same numbers. Keep the three pods in lock-step.
+
+source 'https://cdn.cocoapods.org/'
+source 'https://github.com/lynx-family/Specs.git'
+
+platform :ios, '10.0' # per the Lynx docs/sample. VERIFY: current Xcode may refuse deployment targets below 12; raise it if so
+
+target 'AwcmsLynxApp' do
+  pod 'Lynx', '4.1.0', :subspecs => ['Framework']
+  pod 'PrimJS', '4.1.1', :subspecs => ['quickjs', 'napi']
+
+  # image-service, log-service, http-service (the app's backend calls go through the Http service)
+  pod 'LynxService', '4.1.0', :subspecs => ['Image', 'Log', 'Http']
+  pod 'SDWebImage', '5.15.5'
+  pod 'SDWebImageWebPCoder', '0.11.0'
+
+  # XElement (<input>, <textarea>, <overlay>, ...). Version = Lynx version.
+  pod 'XElement', '4.1.0'
+end
+
+# Xcode 26.x: demote warnings-as-errors in the Lynx pods (from the integration guide).
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'NO'
+      disable = ['-Wno-error', '-Wno-c99-designator',
+                 '-Wno-deprecated-declarations', '-Wno-deprecated-implementations']
+      ['OTHER_CPLUSPLUSFLAGS', 'OTHER_CFLAGS'].each do |key|
+        flags = config.build_settings[key] || ['$(inherited)']
+        flags = [flags] unless flags.is_a?(Array)
+        config.build_settings[key] = flags + disable
+      end
+    end
+  end
+end
+# Also: Build Settings -> "User Script Sandboxing" = NO (required by the Lynx pods' scripts).

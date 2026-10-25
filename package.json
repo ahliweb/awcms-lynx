@@ -1,0 +1,43 @@
+{
+  "name": "awcms-lynx",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "awcms-lynx \u2014 the AWCMS family's LynxJS/ReactLynx client-app template: one ReactLynx codebase rendered natively on iOS, Android and HarmonyOS, in the browser (Lynx for Web) and on macOS/Windows (Lynxtron), against an ahliweb/awcms or ahliweb/awcms-one backend through its documented HTTP API.",
+  "homepage": "https://github.com/ahliweb/awcms-lynx",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahliweb/awcms-lynx.git"
+  },
+  "license": "MIT",
+  "packageManager": "bun@1.4.4",
+  "engines": {
+    "bun": ">=1.4.4",
+    "node": "^22.18.0 || ^24.0.0 || ^26.0.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run --cwd apps/mobile dev",
+    "dev:web": "bun run --cwd apps/web dev",
+    "dev:desktop": "bun run --cwd apps/desktop dev",
+    "build": "bun run build:mobile && bun run build:web",
+    "build:mobile": "bun run --cwd apps/mobile build",
+    "build:web": "bun run --cwd apps/web build",
+    "build:desktop": "bun run --cwd apps/desktop build",
+    "typecheck": "bun run --filter '*' typecheck && tsc -p tsconfig.json",
+    "lint": "biome check .",
+    "format": "biome format --write .",
+    "test": "bun test",
+    "test:ui": "bun run --cwd apps/mobile test",
+    "check": "bun run lint && bun run typecheck && bun run test && bun run test:ui && bun run build",
+    "release": "bun tools/release.ts"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.11",
+    "@types/bun": "^1.3.0",
+    "typescript": "^6.0.3"
+  }
+}

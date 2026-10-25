@@ -1,0 +1,23 @@
+// Reference snippet — merge into entry/oh-package.json5.
+// Derived from integrating-lynx-demo-projects/harmony/HarmonyEmptyProject/entry/oh-package.json5 (Apache-2.0)
+// and guide/start/fragments/harmony/integrating-lynx-with-existing-app-harmony.mdx.
+//
+// Versions: the Harmony integration guide pins 4.0.0; docs/public/version.json lists Lynx 4.1.0 for
+// Android/iOS and the official sample still pins 3.8.1 here. VERIFY on ohpm which @lynx/* versions are
+// published and use ONE version for all @lynx/* packages (primjs follows the guide: same number).
+{
+  "dependencies": {
+    "@ohos/imageknife": "3.2.6",
+    "@lynx/lynx": "4.0.0",
+    "@lynx/lynx_base": "4.0.0",
+    "@lynx/lynx_http_service": "4.0.0",
+    "@lynx/lynx_log_service": "4.0.0",
+    "@lynx/primjs": "4.0.0"
+  },
+  // Debug-only tooling (QR scan / inspector). Keep OUT of release builds: the sample keeps
+  // @lynx/lynx_devtool in build-profile.json5 buildOption.arkOptions.runtimeOnly.packages.
+  "devDependencies": {
+    "@lynx/lynx_devtool": "4.0.0",
+    "@lynx/lynx_devtool_service": "4.0.0"
+  }
+}

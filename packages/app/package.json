@@ -1,0 +1,28 @@
+{
+  "name": "@awcms-lynx/app",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The ReactLynx application shared by every target: screens, components, i18n, design tokens and the startApp() entry each bundle calls.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./styles.css": "./src/styles/app.css"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@awcms-lynx/client": "workspace:*",
+    "@awcms-lynx/platform": "workspace:*"
+  },
+  "peerDependencies": {
+    "@lynx-js/react": ">=0.129.0"
+  },
+  "devDependencies": {
+    "@lynx-js/react": "0.129.0",
+    "@lynx-js/rspeedy": "0.18.3",
+    "@lynx-js/types": "4.3.0",
+    "@types/react": "^19.2.18",
+    "typescript": "^6.0.3"
+  }
+}
