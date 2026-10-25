@@ -1,0 +1,12 @@
+# Bun configuration for this repository.
+#
+# [test] pathIgnorePatterns — why it lives here and not in a script flag
+# ----------------------------------------------------------------------
+# The ReactLynx UI tests under apps/mobile/src/__tests__ are Rstest suites: they
+# need the Lynx JSX runtime and the ReactLynx test transform, which only
+# Rstest sets up (`bun run test:ui`). A bare `bun test` from the root must
+# not pick them up. CI and developers both type `bun test`, and bunfig.toml is
+# read however `bun test` is invoked, so the rule cannot be stepped around —
+# the same lesson ahliweb/awcms-one records in its own bunfig.toml.
+[test]
+pathIgnorePatterns = ["apps/mobile/**", "**/node_modules/**", "**/dist/**"]

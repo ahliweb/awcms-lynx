@@ -1,0 +1,17 @@
+awcms-lynx
+Copyright (c) 2026 AhliWeb — MIT License (see LICENSE)
+
+This product includes code adapted from the following Apache-2.0 licensed
+projects of The Lynx Authors (https://github.com/lynx-family):
+
+  - lynx-family/lynx-stack — @lynx-js/create-lynx template files
+    (packages/rspeedy/create-lynx/template-rspeedy-react-ts): Rspeedy config,
+    tsconfig layout, rstest setup.
+  - lynx-family/integrating-lynx-demo-projects — native host projects for
+    Android, iOS and HarmonyOS, adapted under hosts/.
+  - @lynx-js/create-lynxtron template — Lynxtron desktop host layout,
+    adapted under apps/desktop.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use those portions except in compliance with the License. You may obtain a
+copy of the License at http://www.apache.org/licenses/LICENSE-2.0
