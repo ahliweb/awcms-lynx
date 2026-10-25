@@ -1,6 +1,6 @@
 {
   "name": "@awcms-lynx/desktop",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "The Lynxtron host for macOS and Windows: one LynxWindow that runs main.lynx.bundle and answers the host-bridge contract from its main process.",

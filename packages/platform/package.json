@@ -1,6 +1,6 @@
 {
   "name": "@awcms-lynx/platform",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "The host-bridge contract between the ReactLynx app and each host (iOS, Android, HarmonyOS, Web, Lynxtron desktop), the background-thread adapter that calls it, and runtime-config resolution from lynx.__globalProps.",

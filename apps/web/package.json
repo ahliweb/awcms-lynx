@@ -1,6 +1,6 @@
 {
   "name": "@awcms-lynx/web",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "The Lynx for Web host: a static page that mounts <lynx-view> on the shared main.web.bundle and answers the host-bridge contract in the browser.",

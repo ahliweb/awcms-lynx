@@ -1,6 +1,6 @@
 {
   "name": "awcms-lynx",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
   "description": "awcms-lynx \u2014 the AWCMS family's LynxJS/ReactLynx client-app template: one ReactLynx codebase rendered natively on iOS, Android and HarmonyOS, in the browser (Lynx for Web) and on macOS/Windows (Lynxtron), against an ahliweb/awcms or ahliweb/awcms-one backend through its documented HTTP API.",
