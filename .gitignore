@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+output/
+*.tsbuildinfo
+
+# Environment — only the committed examples are tracked
+.env
+.env.*
+!.env.example
+
+# Native host build output (reference hosts under hosts/)
+hosts/**/build/
+hosts/**/.gradle/
+hosts/**/Pods/
+hosts/**/oh_modules/
+hosts/**/*.xcworkspace/xcuserdata/
+hosts/**/local.properties
+
+# Logs and OS noise
+*.log*
+.DS_Store
+*.local
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
