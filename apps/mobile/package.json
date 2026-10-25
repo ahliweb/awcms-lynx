@@ -1,0 +1,34 @@
+{
+  "name": "@awcms-lynx/mobile",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The Lynx bundle target: main.lynx.bundle for the iOS, Android and HarmonyOS hosts (and Lynx Explorer), main.web.bundle for Lynx for Web.",
+  "scripts": {
+    "dev": "rspeedy dev",
+    "build": "rspeedy build",
+    "preview": "rspeedy preview",
+    "test": "rstest run",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@awcms-lynx/app": "workspace:*",
+    "@awcms-lynx/client": "workspace:*",
+    "@awcms-lynx/platform": "workspace:*",
+    "@lynx-js/react": "0.129.0"
+  },
+  "devDependencies": {
+    "@lynx-js/preact-devtools": "5.0.1-20260827072047-5f77e12",
+    "@lynx-js/qrcode-rsbuild-plugin": "0.7.3",
+    "@lynx-js/react-rsbuild-plugin": "0.22.0",
+    "@lynx-js/rspeedy": "0.18.3",
+    "@lynx-js/types": "4.3.0",
+    "@rsbuild/plugin-type-check": "1.6.1",
+    "@rstest/core": "0.12.4",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@types/react": "^19.2.18",
+    "jsdom": "^27.4.0",
+    "typescript": "^6.0.3"
+  }
+}

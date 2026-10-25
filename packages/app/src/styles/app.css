@@ -1,0 +1,318 @@
+/*
+ * Design tokens + component styles for every Lynx target.
+ *
+ * Lynx is not a browser: `display` must be explicit (`flex` here), text only
+ * renders inside <text>, and there is no cascade into <text> from a parent
+ * <view> unless CSS inheritance is enabled — so text styles sit on the text
+ * classes themselves. Colours meet WCAG 2.2 AA contrast (4.5:1 for body text)
+ * on their own backgrounds; the pairs are listed in docs/ui-guidelines.md.
+ * Tokens are declared on `.App` (not `:root`) because every Lynx page tree
+ * starts there and custom properties inherit to its descendants.
+ */
+.App {
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-text: #1b1f24;
+  --color-muted: #4a5360;
+  --color-border: #d6dbe1;
+  --color-primary: #0b5cad;
+  --color-on-primary: #ffffff;
+  --color-danger: #b42318;
+  --color-on-danger: #ffffff;
+  --color-info-bg: #e8f1fb;
+  --color-error-bg: #fdecea;
+  --color-success-bg: #e7f6ec;
+  --color-warning-bg: #fff4e0;
+  --radius: 12px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --font-body: 15px;
+  --font-small: 13px;
+  --font-title: 22px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-bg);
+}
+
+.App__main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.Screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.Screen__header {
+  padding: var(--space-6) var(--space-4) var(--space-3);
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.Screen__title {
+  font-size: var(--font-title);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.Screen__body {
+  flex: 1;
+}
+
+.Screen__content {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+}
+
+.Section {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-6);
+}
+
+.Section__title {
+  font-size: var(--font-small);
+  font-weight: 700;
+  color: var(--color-muted);
+  margin-bottom: var(--space-2);
+}
+
+.Row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.Row__label {
+  font-size: var(--font-body);
+  color: var(--color-muted);
+  margin-right: var(--space-3);
+}
+
+.Row__value {
+  font-size: var(--font-body);
+  color: var(--color-text);
+  flex-shrink: 1;
+  text-align: right;
+}
+
+.Inline {
+  display: flex;
+  flex-direction: row;
+}
+
+.Button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  margin-top: var(--space-3);
+  margin-right: var(--space-2);
+  border-radius: var(--radius);
+}
+
+.Button--primary {
+  background-color: var(--color-primary);
+}
+
+.Button--secondary {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-primary);
+}
+
+.Button--danger {
+  background-color: var(--color-danger);
+}
+
+.Button--disabled {
+  opacity: 0.5;
+}
+
+.Button__label {
+  font-size: var(--font-body);
+  font-weight: 600;
+  color: var(--color-on-primary);
+}
+
+.Button--secondary .Button__label {
+  color: var(--color-primary);
+}
+
+.Field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-3);
+}
+
+.Field__label {
+  font-size: var(--font-small);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-1);
+}
+
+.Field__input {
+  height: 48px;
+  padding: 0 var(--space-3);
+  font-size: var(--font-body);
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.Field__input--invalid {
+  border-color: var(--color-danger);
+}
+
+.Field__hint {
+  font-size: var(--font-small);
+  color: var(--color-muted);
+  margin-top: var(--space-1);
+}
+
+.Field__error {
+  font-size: var(--font-small);
+  color: var(--color-danger);
+  margin-top: var(--space-1);
+}
+
+.Notice {
+  padding: var(--space-3);
+  border-radius: var(--radius);
+  margin: var(--space-2) 0;
+}
+
+.Notice--info {
+  background-color: var(--color-info-bg);
+}
+
+.Notice--error {
+  background-color: var(--color-error-bg);
+}
+
+.Notice--success {
+  background-color: var(--color-success-bg);
+}
+
+.Notice--warning {
+  background-color: var(--color-warning-bg);
+}
+
+.Notice__text {
+  font-size: var(--font-body);
+  color: var(--color-text);
+}
+
+.Card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.Card--product {
+  flex-direction: row;
+}
+
+.Card__image {
+  width: 88px;
+  height: 88px;
+  border-radius: 8px;
+  margin-right: var(--space-3);
+  background-color: var(--color-bg);
+}
+
+.Card__text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.Card__title {
+  font-size: var(--font-body);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.Card__body {
+  font-size: var(--font-body);
+  color: var(--color-muted);
+  margin-top: var(--space-1);
+}
+
+.Card__price {
+  font-size: var(--font-body);
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-top: var(--space-1);
+}
+
+.Card__strike {
+  font-size: var(--font-small);
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+.Card__meta {
+  font-size: var(--font-small);
+  color: var(--color-muted);
+  margin-top: var(--space-2);
+}
+
+.Loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+}
+
+.Loading__text {
+  font-size: var(--font-body);
+  color: var(--color-muted);
+}
+
+.TabBar {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding-bottom: var(--space-2);
+}
+
+.TabBar__tab {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+}
+
+.TabBar__tab--active {
+  border-top: 3px solid var(--color-primary);
+}
+
+.TabBar__label {
+  font-size: var(--font-small);
+  color: var(--color-muted);
+}
+
+.TabBar__tab--active .TabBar__label {
+  color: var(--color-primary);
+  font-weight: 700;
+}
