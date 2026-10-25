@@ -1,0 +1,39 @@
+{
+  "name": "@awcms-lynx/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The Lynxtron host for macOS and Windows: one LynxWindow that runs main.lynx.bundle and answers the host-bridge contract from its main process.",
+  "main": "main.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development concurrently -k --prefix none \"rspeedy dev\" \"dev-ready-rspeedy && rsbuild dev --environment desktop\"",
+    "build": "rspeedy build && rsbuild build --environment desktop",
+    "start": "bun run build && lynxtron dist/desktop",
+    "pack": "bun run build && lynxtron-builder --publish never",
+    "typecheck": "tsc -p tsconfig.json && tsc -p src/main/tsconfig.json && tsc -p src/app/tsconfig.json"
+  },
+  "devDependencies": {
+    "@awcms-lynx/app": "workspace:*",
+    "@awcms-lynx/platform": "workspace:*",
+    "@lynx-js/lynxtron": "0.0.30",
+    "@lynx-js/lynxtron-builder": "0.0.30",
+    "@lynx-js/lynxtron-dev-plugins": "0.0.30",
+    "@lynx-js/react": "0.129.0",
+    "@lynx-js/react-rsbuild-plugin": "0.22.0",
+    "@lynx-js/rspeedy": "0.18.3",
+    "@lynx-js/types": "4.3.0",
+    "@rsbuild/core": "2.2.9",
+    "@rsbuild/plugin-type-check": "1.6.1",
+    "@types/bun": "^1.3.0",
+    "@types/node": "^22.18.0",
+    "@types/react": "^19.2.18",
+    "concurrently": "10.0.6",
+    "cross-env": "10.1.0",
+    "typescript": "^6.0.3"
+  },
+  "engines": {
+    "node": "^22.18.0 || ^24.0.0 || ^26.0.0"
+  },
+  "author": "AWCMS",
+  "homepage": "https://github.com/ahliweb/awcms-lynx"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@awcms-lynx/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The Lynx for Web host: a static page that mounts <lynx-view> on the shared main.web.bundle and answers the host-bridge contract in the browser.",
+  "scripts": {
+    "dev": "rsbuild dev",
+    "build": "rsbuild build",
+    "preview": "rsbuild preview",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@awcms-lynx/platform": "workspace:*",
+    "@lynx-js/lynx-core": "0.1.4",
+    "@lynx-js/web-core": "0.26.5"
+  },
+  "devDependencies": {
+    "@rsbuild/core": "2.2.9",
+    "@types/bun": "^1.3.0",
+    "typescript": "^6.0.3"
+  }
+}

@@ -1,0 +1,52 @@
+# Packaging for macOS and Windows with @lynx-js/lynxtron-builder (an electron-builder
+# wrapper). `bun run pack` builds first, then packages dist/desktop into dist/.
+#
+# appId / productName are placeholders: a derived app MUST change them (and keep
+# productName in step with PUBLIC_AWCMS_APP_NAME, which names the window).
+productName: AWCMS Lynx
+appId: id.ahliweb.awcms.lynx
+copyright: Copyright (c) AWCMS contributors
+directories:
+  buildResources: resources
+  output: dist
+  app: dist/desktop
+files:
+  - main.js
+  - '**/*.lynx.bundle'
+  - '**/*.js'
+  - '**/*.json'
+asar: true
+npmRebuild: false
+icon: lynxtron.png
+electronBranding:
+  projectName: lynxtron
+  productName: Lynxtron
+mac:
+  category: public.app-category.business
+  target:
+    - target: dmg
+      arch: [x64, arm64]
+    - target: zip
+      arch: [x64, arm64]
+  artifactName: ${productName}-v${version}-mac-${arch}.${ext}
+  # TODO(derived app): code signing + notarisation. Unsigned builds are blocked by
+  # Gatekeeper on other Macs. Replace `identity: null` with your "Developer ID
+  # Application" identity, then add:
+  #   hardenedRuntime: true
+  #   notarize: true            # needs APPLE_ID / APPLE_APP_SPECIFIC_PASSWORD / APPLE_TEAM_ID
+  #   entitlements / entitlementsInherit: <plist files> (check what the Lynxtron runtime needs)
+  identity: null
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+  artifactName: ${productName}-v${version}-win-${arch}.${ext}
+  # TODO(derived app): Authenticode signing (certificateSubjectName / Azure Trusted Signing)
+  # so SmartScreen does not warn on first run.
+nsis:
+  artifactName: ${productName}-v${version}-win-${arch}-Setup.${ext}
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true

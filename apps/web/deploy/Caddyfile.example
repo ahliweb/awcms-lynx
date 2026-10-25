@@ -1,0 +1,57 @@
+# Caddy 2 example for the awcms-lynx Web host.
+#
+#   bun run build:mobile && bun run build:web
+#   rsync -a apps/web/dist/ /srv/awcms-lynx-web/
+#   SITE_ADDRESS=app.example.id AWCMS_BACKEND=127.0.0.1:4321 caddy run --config Caddyfile
+#
+# Why a reverse proxy: awcms staff routes send NO CORS headers (no OPTIONS handler,
+# Authorization / X-AWCMS-Tenant-ID are never allowed cross-origin), so the browser
+# build must call the backend from the SAME origin. Build with
+# PUBLIC_AWCMS_API_BASE_URL empty (or set to https://app.example.id, this site) and let
+# Caddy forward /api/* and /feed.json to the backend.
+#
+# Caddy obtains and renews TLS certificates itself and redirects http to https.
+
+{$SITE_ADDRESS:localhost} {
+	encode zstd gzip
+
+	root * /srv/awcms-lynx-web
+
+	# --- Backend: same-origin pass-through -------------------------------------
+	# Caddy keeps the incoming Host header and adds X-Forwarded-For / -Proto /
+	# -Host, which matters when the backend routes tenants by domain.
+	@backend path /api/* /feed.json
+	handle @backend {
+		reverse_proxy {$AWCMS_BACKEND:127.0.0.1:4321}
+	}
+
+	# --- Static host page + Lynx bundle ------------------------------------------
+	handle {
+		header {
+			# Keep in sync with contentSecurityPolicy() in rsbuild.config.ts (the same string
+			# is sent by `bun run preview`). The sha256 allows the one inline bootstrap script
+			# web-core 0.26.5 injects into its sandboxed iframe; recompute it when upgrading:
+			#   printf '%s' 'parent.postMessage("lynx:mtsready","*")' | openssl dgst -sha256 -binary | base64
+			# If the API lives on another origin, add it to connect-src.
+			Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob: 'sha256-jRMGyyS9ZQKlh3Jf5wqkvDxFe4RAk7bBflr8m7gc9nc='; worker-src 'self'; style-src 'self' 'unsafe-inline' blob:; img-src 'self' data: blob: https:; font-src 'self' data:; media-src 'self' blob: https:; connect-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+			X-Content-Type-Options "nosniff"
+			Referrer-Policy "strict-origin-when-cross-origin"
+			Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+			# HSTS: only once the site is reliably served over https (it pins browsers to https
+			# for a year). Caddy terminates TLS here, so this is normally safe to enable.
+			Strict-Transport-Security "max-age=31536000; includeSubDomains"
+			-Server
+		}
+
+		# Content-hashed assets (static/js, static/css, static/wasm) never change in place.
+		@hashed path /static/*
+		header @hashed Cache-Control "public, max-age=31536000, immutable"
+
+		# The page and the Lynx bundle keep a stable name: always revalidate (ETag makes
+		# an unchanged file a cheap 304) so a deploy reaches users on the next load.
+		@revalidate path / /index.html *.bundle
+		header @revalidate Cache-Control "no-cache"
+
+		file_server
+	}
+}

@@ -1,0 +1,90 @@
+# nginx example for the awcms-lynx Web host (server block; include it from http { }).
+#
+#   bun run build:mobile && bun run build:web
+#   rsync -a apps/web/dist/ /var/www/awcms-lynx-web/
+#
+# Why a reverse proxy: awcms staff routes send NO CORS headers (no OPTIONS handler,
+# Authorization / X-AWCMS-Tenant-ID are never allowed cross-origin), so the browser
+# build must call the backend from the SAME origin. Build with
+# PUBLIC_AWCMS_API_BASE_URL empty (or set to https://app.example.id, this site) and let
+# nginx forward /api/ and /feed.json to the backend.
+#
+# TLS: certificates are not shown here (certbot / your ingress). The HSTS header below
+# belongs on the https server only.
+
+upstream awcms_backend {
+    server 127.0.0.1:4321;
+    keepalive 16;
+}
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name app.example.id;
+
+    # ssl_certificate     /etc/letsencrypt/live/app.example.id/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/app.example.id/privkey.pem;
+
+    root /var/www/awcms-lynx-web;
+    index index.html;
+
+    gzip on;
+    gzip_types text/css application/javascript application/json application/wasm;
+
+    # web-core loads its renderer as .wasm: it must be served as application/wasm to
+    # be compiled with WebAssembly.compileStreaming. (Recent mime.types already has it.)
+    types {
+        application/wasm wasm;
+    }
+
+    server_tokens off;
+
+    # --- Backend: same-origin pass-through ---------------------------------------
+    location ~ ^/(api/|feed\.json$) {
+        proxy_pass http://awcms_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+        # Keep the public Host: the backend may route tenants by domain.
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_read_timeout 60s;
+        add_header X-Content-Type-Options "nosniff" always;
+    }
+
+    # --- Content-hashed assets (static/js, static/css, static/wasm) --------------
+    # NOTE: add_header in a location REPLACES the server-level ones, so the security
+    # headers are repeated in each static location. Keep the CSP in sync with
+    # contentSecurityPolicy() in rsbuild.config.ts. The sha256 allows the one inline
+    # bootstrap script web-core 0.26.5 injects into its sandboxed iframe; recompute it
+    # when upgrading:
+    #   printf '%s' 'parent.postMessage("lynx:mtsready","*")' | openssl dgst -sha256 -binary | base64
+    # If the API lives on another origin, add it to connect-src.
+    location /static/ {
+        try_files $uri =404;
+        add_header Cache-Control "public, max-age=31536000, immutable" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob: 'sha256-jRMGyyS9ZQKlh3Jf5wqkvDxFe4RAk7bBflr8m7gc9nc='; worker-src 'self'; style-src 'self' 'unsafe-inline' blob:; img-src 'self' data: blob: https:; font-src 'self' data:; media-src 'self' blob: https:; connect-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    }
+
+    # --- The page and the Lynx bundle: stable names, always revalidate -----------
+    location / {
+        try_files $uri $uri/ =404;
+        add_header Cache-Control "no-cache" always;
+        add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob: 'sha256-jRMGyyS9ZQKlh3Jf5wqkvDxFe4RAk7bBflr8m7gc9nc='; worker-src 'self'; style-src 'self' 'unsafe-inline' blob:; img-src 'self' data: blob: https:; font-src 'self' data:; media-src 'self' blob: https:; connect-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+        add_header Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()" always;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+    }
+}
+
+server {
+    listen 80;
+    server_name app.example.id;
+    return 301 https://$host$request_uri;
+}
