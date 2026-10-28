@@ -60,25 +60,27 @@ Before any Lynx task, read the Lynx index: <https://lynxjs.org/llms.txt> (the of
 - `ahliweb/awcms` — backend and admin; ADR-0146 (persona apps), guard `tests/product-surface-policy.test.ts` (no Lynx there).
 - `ahliweb/awcms-one` — commerce backend + Astro storefront; ADR-0050, ADR-0016, guard `tests/lynx-direction.test.mjs` (no Lynx there).
 
-## Orchestrator & Agent (model AI)
+## Orchestrator and agents (AI models)
 
-> Standar lintas-portofolio dari [`ahliweb/personal-coding`](https://github.com/ahliweb/personal-coding/blob/main/docs/tingkatan-model-ai-claude-openai.md) (docs/tingkatan-model-ai-claude-openai.md, snapshot 2026-10-28). Harga, effort, dan lini model dipelihara di sana — jangan disalin ke repo ini.
+> Portfolio-wide standard from [`ahliweb/personal-coding`](https://github.com/ahliweb/personal-coding/blob/main/docs/tingkatan-model-ai-claude-openai.md) (docs/tingkatan-model-ai-claude-openai.md, snapshot 2026-10-28). Prices, effort levels and model lines are maintained there — do not copy them into this repository.
 
-Pekerjaan yang perlu dipecah ke beberapa agent memakai pola **orchestrator → agent**. Orchestrator memecah pekerjaan, membagi tugas, mengatur ketergantungan, lalu memeriksa dan menyatukan hasil; agent mengerjakan satu bagian yang sudah dibatasi.
+Work that has to be split across several agents follows the **orchestrator → agent** pattern. The orchestrator decomposes the work, assigns tasks, manages dependencies, then checks and integrates the results; an agent carries out one bounded part.
 
-| Peran | Claude Code | Codex / OpenAI |
+| Role | Claude Code | Codex / OpenAI |
 | --- | --- | --- |
 | Orchestrator | Opus 5.5, effort `high` | GPT-6.1 Sol, `high` |
-| Agent kompleks — lintas komponen, keamanan, integrasi, risiko regresi | Sonnet 5.5, `medium` (subagent `pelaksana-kompleks`) | GPT-6.1 Sol atau Terra, `medium` |
-| Agent sederhana — mekanis, terdefinisi jelas, risiko rendah | Haiku 5.5, `low` (subagent `pelaksana-sederhana`) | GPT-6 Luna atau Terra, `low` |
+| Complex agent — cross-component, security, integration, regression risk | Sonnet 5.5, `medium` (subagent `pelaksana-kompleks`) | GPT-6.1 Sol or Terra, `medium` |
+| Simple agent — mechanical, well-defined, low risk | Haiku 5.5, `low` (subagent `pelaksana-sederhana`) | GPT-6 Luna or Terra, `low` |
 
-Pekerjaan kritis (arsitektur, keamanan, migrasi besar): orchestrator Fable 5.1 `high`–`xhigh`, agent kompleks Opus 5.5 `high`.
+Critical work (architecture, security, large migrations): orchestrator Fable 5.1 `high`–`xhigh`, complex agent Opus 5.5 `high`.
 
-Aturan:
+Rules:
 
-1. **Jangan memecah tugas kecil.** Coba satu model kuat (Opus 5.5 / GPT-6.1 Sol) dengan effort rendah lebih dulu.
-2. **Naikkan, jangan menebak.** Agent sederhana yang menemukan ambiguitas, risiko, atau sentuhan arsitektur berhenti dan mengembalikan tugas ke orchestrator, yang memindahkannya ke agent kompleks.
-3. **Agent paralel terisolasi.** Tidak boleh menyentuh file atau modul yang sama; tugas yang saling bergantung dijalankan berurutan.
-4. **Verifikasi tetap di orchestrator.** Diff, uji, dan angka dicek sendiri sebelum dipakai; laporan agent bukan bukti.
-5. **Agent tetap di scope-nya.** Tidak mengubah arsitektur, tidak mendelegasikan lagi, tidak menyentuh area di luar tugas.
-6. **Aturan repo ini tetap berlaku** untuk setiap agent — alur kerja, gerbang, guardrail keamanan, konvensi commit.
+1. **Do not split small tasks.** Try one strong model (Opus 5.5 / GPT-6.1 Sol) at low effort first.
+2. **Escalate, do not guess.** A simple agent that finds ambiguity, risk or an architectural touch stops and hands the task back to the orchestrator, which moves it to a complex agent.
+3. **Parallel agents are isolated.** They never touch the same files or modules; dependent tasks run sequentially.
+4. **Verification stays with the orchestrator.** Diffs, tests and numbers are checked first-hand before use; an agent's report is not evidence.
+5. **Agents stay in scope.** No architecture changes, no further delegation, nothing outside the task.
+6. **This repository's rules still apply** to every agent — workflow, gates, security guardrails, commit conventions.
+
+The subagent definitions live in [`.claude/agents/`](.claude/agents/) (written in Indonesian, the portfolio's working language for agent instructions).

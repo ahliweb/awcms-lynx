@@ -36,4 +36,4 @@ Templat klien tidak memiliki tanggung jawab sisi server sendiri; baris-baris di 
 | Pengujian | `testing.md` |
 | Deployment | `deployment.md`, `../hosts/README.md`, `../apps/web/README.md`, `../apps/desktop/README.md` |
 | Alur kerja pengembangan, panduan repositori | `development.md`, `../CONTRIBUTING.md`, `../.changesets/README.md` |
-| Instruksi agen, skill | `../AGENTS.md`, `../.claude/skills/` |
+| Instruksi agen, skill | `../AGENTS.md` (termasuk peran orchestrator & agent), `../.claude/agents/`, `../.claude/skills/` |
