@@ -1,6 +1,6 @@
 {
   "name": "@awcms-lynx/mobile",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "The Lynx bundle target: main.lynx.bundle for the iOS, Android and HarmonyOS hosts (and Lynx Explorer), main.web.bundle for Lynx for Web.",
