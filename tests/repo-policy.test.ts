@@ -181,6 +181,30 @@ describe('documentation', () => {
     }
   });
 
+  test("each Indonesian mirror keeps its English source's heading structure", () => {
+    // A section added to one language only (as AGENTS.md once got) shows up
+    // here as a heading-count mismatch instead of silently drifting.
+    const shape = (text: string) =>
+      text
+        .replace(/```[\s\S]*?```/g, '')
+        .split('\n')
+        .map((line) => /^(#{1,6}) /.exec(line)?.[1]?.length)
+        .filter((level): level is number => level !== undefined)
+        .join(',');
+    const english = [
+      ...['README.md', 'AGENTS.md', 'CONTRIBUTING.md', 'SECURITY.md'].map((f) => join(ROOT, f)),
+      ...walk(join(ROOT, 'docs'), (p) => p.endsWith('.md') && !p.endsWith('.id.md')),
+    ];
+    for (const file of english) {
+      const mirror = file.replace(/\.md$/, '.id.md');
+      if (!existsSync(mirror)) continue;
+      expect({ file: rel(file), headings: shape(read(mirror)) }).toEqual({
+        file: rel(file),
+        headings: shape(read(file)),
+      });
+    }
+  });
+
   test('relative links in Markdown resolve', () => {
     const files = walk(ROOT, (p) => p.endsWith('.md'));
     for (const file of files) {

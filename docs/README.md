@@ -34,4 +34,4 @@ A client template has no server-side concerns of its own; those rows point to wh
 | Testing | `testing.md` |
 | Deployment | `deployment.md`, `../hosts/README.md`, `../apps/web/README.md`, `../apps/desktop/README.md` |
 | Development workflows, repository guidelines | `development.md`, `../CONTRIBUTING.md`, `../.changesets/README.md` |
-| Agent instructions, skills | `../AGENTS.md`, `../.claude/skills/` |
+| Agent instructions, skills | `../AGENTS.md` (incl. orchestrator & agent roles), `../.claude/agents/`, `../.claude/skills/` |
