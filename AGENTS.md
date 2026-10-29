@@ -33,6 +33,7 @@ Before any Lynx task, read the Lynx index: <https://lynxjs.org/llms.txt> (the of
 8. **Generic helpers are `function name<T>()`,** not `<T>() =>` arrows — the ReactLynx test transform parses `.ts` as TSX.
 9. **Honesty over polish.** Settings must state the real session storage; docs must describe what is verified, not what is planned ([`docs/status.md`](docs/status.md)).
 10. **Backend gaps are raised upstream**, not worked around here ([`docs/backend-integration.md` §Gaps](docs/backend-integration.md#gaps)).
+11. **Product work follows the portfolio's development flow v2.0.0** ([`ahliweb/personal-coding`, alur-pengembangan-produk](https://github.com/ahliweb/personal-coding/blob/main/docs/alur-pengembangan-produk.md); adopted by `awcms` in [ADR-0156](https://github.com/ahliweb/awcms/blob/main/docs/adr/0156-adopt-development-flow-v2-validated-ux-before-data-model-frontend-backend-integration-per-slice.md)). A screen is visualised and usability-tested (step 4) before the data model and contract it needs; a screen with no data source in the backend contract is not ready to build. Step 11 runs per slice: **11.1 frontend here**, against the backend's OpenAPI contract and a mock or fixture derived from it → **11.2 backend** as a PR in `awcms` or `awcms-one` (rule 10) → **11.3 integration** (the pinned `packages/client` tests of rule 2, then the UI tests against the real backend).
 
 ## Layout and ownership
 
