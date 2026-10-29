@@ -33,6 +33,7 @@ Sebelum mengerjakan tugas Lynx apa pun, baca indeks Lynx: <https://lynxjs.org/ll
 8. **Helper generik ditulis `function name<T>()`,** bukan arrow `<T>() =>` — transform tes ReactLynx mem-parsing `.ts` sebagai TSX.
 9. **Kejujuran lebih utama daripada kemasan.** Pengaturan harus menyatakan penyimpanan sesi yang sebenarnya; dokumen harus menjelaskan apa yang telah terverifikasi, bukan yang masih direncanakan ([`docs/status.md`](docs/status.md)).
 10. **Celah backend diajukan ke hulu,** bukan diakali di sini ([`docs/backend-integration.md` §Gaps](docs/backend-integration.md#gaps)).
+11. **Pekerjaan produk mengikuti alur pengembangan v2.0.0 milik portofolio** ([`ahliweb/personal-coding`, alur-pengembangan-produk](https://github.com/ahliweb/personal-coding/blob/main/docs/alur-pengembangan-produk.md); diadopsi `awcms` lewat [ADR-0156](https://github.com/ahliweb/awcms/blob/main/docs/adr/0156-adopt-development-flow-v2-validated-ux-before-data-model-frontend-backend-integration-per-slice.id.md)). Sebuah layar divisualisasikan dan diuji usabilitasnya (langkah 4) sebelum model data dan kontrak yang dibutuhkannya; layar tanpa sumber data di kontrak backend belum siap dibangun. Langkah 11 berjalan per slice: **11.1 frontend di sini**, terhadap kontrak OpenAPI backend dan mock atau fixture yang diturunkan darinya → **11.2 backend** sebagai PR di `awcms` atau `awcms-one` (aturan 10) → **11.3 integrasi** (tes `packages/client` yang terkunci pada aturan 2, lalu tes UI terhadap backend sungguhan).
 
 ## Tata letak dan kepemilikan
 
