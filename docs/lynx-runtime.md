@@ -1,6 +1,6 @@
 # The Lynx runtime, as this repository uses it
 
-Facts about Lynx that shape the code, with where they were verified. Lynx engine 4.0 (Explorer release 4.0.0), `@lynx-js/react` 0.129.0, `@lynx-js/rspeedy` 0.18.3, `@lynx-js/web-core` 0.26.5, Lynxtron 0.0.30.
+Facts about Lynx that shape the code, with where they were verified. Lynx engine 4.0 (Explorer release 4.0.0), `@lynx-js/react` 0.129.0, `@lynx-js/rspeedy` 0.18.3, `@lynx-js/web-core` 0.26.5, Lynxtron 0.0.30. The runtime facts below were probed on `@lynx-js/react` 0.129.0 and `@lynx-js/rspeedy` 0.18.3; the packages were raised to 0.129.2 and 0.18.5 (patch releases) on 7 November 2026 and `bun run check` passes, but the facts were not re-probed.
 
 | Fact | Consequence here | Verified in |
 | --- | --- | --- |
