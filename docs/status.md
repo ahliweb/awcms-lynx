@@ -25,7 +25,7 @@ Last updated 25 October 2026. "Verified" means it was run in this repository's e
 
 ## Known limits
 
-- **Lynx versions.** JS packages: `@lynx-js/react` 0.129.0, `@lynx-js/rspeedy` 0.18.3, `@lynx-js/web-core` 0.26.5, Lynxtron 0.0.30. The official native samples pin Lynx 3.8.x (Android/Harmony) while docs and Explorer are at 4.x; a product picks one engine version for all native hosts.
+- **Lynx versions.** JS packages: `@lynx-js/react` 0.129.2, `@lynx-js/rspeedy` 0.18.5, `@lynx-js/web-core` 0.26.5, Lynxtron 0.0.30. The official native samples pin Lynx 3.8.x (Android/Harmony) while docs and Explorer are at 4.x; a product picks one engine version for all native hosts.
 - **Session storage**: hardware-backed only on the native hosts (once compiled); desktop uses an owner-only file (`app-file`, Lynxtron 0.0.30 has no keyring API); the Web uses browser storage.
 - **Backend gaps** that keep a persona app at PoC grade are listed in [`backend-integration.md`](backend-integration.md#gaps).
 - **Not in v1**: deep links, push token retrieval, camera/location/barcode, offline cache — each needs a host-contract bump (ADR-0003 consequences).

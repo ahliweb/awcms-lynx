@@ -2,7 +2,7 @@
 
 # Runtime Lynx, sebagaimana repositori ini menggunakannya
 
-Fakta tentang Lynx yang membentuk kode, beserta tempat ia diverifikasi. Lynx engine 4.0 (Explorer release 4.0.0), `@lynx-js/react` 0.129.0, `@lynx-js/rspeedy` 0.18.3, `@lynx-js/web-core` 0.26.5, Lynxtron 0.0.30.
+Fakta tentang Lynx yang membentuk kode, beserta tempat ia diverifikasi. Lynx engine 4.0 (Explorer release 4.0.0), `@lynx-js/react` 0.129.0, `@lynx-js/rspeedy` 0.18.3, `@lynx-js/web-core` 0.26.5, Lynxtron 0.0.30. Fakta runtime di bawah diuji pada `@lynx-js/react` 0.129.0 dan `@lynx-js/rspeedy` 0.18.3; paket dinaikkan ke 0.129.2 dan 0.18.5 (rilis patch) pada 7 November 2026 dan `bun run check` lulus, tetapi fakta tidak diuji ulang.
 
 | Fakta | Konsekuensi di sini | Diverifikasi di |
 | --- | --- | --- |

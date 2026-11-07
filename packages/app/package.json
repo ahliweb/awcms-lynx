@@ -19,9 +19,9 @@
     "@lynx-js/react": ">=0.129.0"
   },
   "devDependencies": {
-    "@lynx-js/react": "0.129.0",
-    "@lynx-js/rspeedy": "0.18.3",
-    "@lynx-js/types": "4.3.0",
+    "@lynx-js/react": "0.129.2",
+    "@lynx-js/rspeedy": "0.18.5",
+    "@lynx-js/types": "4.4.2",
     "@types/react": "^19.2.18",
     "typescript": "^6.0.3"
   }
