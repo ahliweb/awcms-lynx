@@ -1,6 +1,6 @@
 🇮🇩 Bahasa Indonesia · 🇬🇧 [English (source)](carikbot-conversation-reference.md)
 
-<!-- i18n-source-hash: sha256:00000000000000000000000000000000f4a4ba902b26911d7bdd2e8ed130236d -->
+<!-- i18n-source-hash: sha256:f7c906bc4caf32a8defe933fb44a9f962a619083bbfbaab3fef9042996470f7f -->
 
 # Referensi Konsep CarikBot — Percakapan, Layanan, dan Batas Arsitektur
 
