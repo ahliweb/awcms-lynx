@@ -1,3 +1,5 @@
+🇬🇧 English (source) · 🇮🇩 [Bahasa Indonesia](carikbot-conversation-reference.id.md)
+
 # CarikBot Reference — Safe Channel-Neutral Conversation UI
 
 **Document version** v1.0.0 | **Date** 2026-11-10 | **Status** F0 design reference; no runtime code, shipped API or platform parity implied.
