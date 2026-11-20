@@ -13,6 +13,7 @@
 | [`contract-validation-2026-11.md`](contract-validation-2026-11.md) | you need the evidence behind the backend contract: pinned SHAs, per-operation matrices, re-assessed gaps, the proposed contract-consumer test plan |
 | [`fastplaz-concepts.md`](fastplaz-concepts.md) | you evaluate the FastPlaz-derived proposal for per-target host build diagnostics: boundaries, six scenarios, acceptance rubric (research only, proposed) |
 | [`status.md`](status.md) | you need to know what is verified, per target, and what is not |
+| [`carikbot-conversation-reference.md`](carikbot-conversation-reference.md) | you evaluate typed menu/form/handoff conversation rendering for persona clients: candidate contract, threats, tests (research only, proposed) |
 | [`adr/`](adr/README.md) | you want to know why something is the way it is |
 | [`../hosts/README.md`](../hosts/README.md) | you build a native host |
 
