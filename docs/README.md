@@ -12,6 +12,7 @@
 | [`development.md`](development.md) | you set up, run the daily loop, open a PR or cut a release |
 | [`contract-validation-2026-11.md`](contract-validation-2026-11.md) | you need the evidence behind the backend contract: pinned SHAs, per-operation matrices, re-assessed gaps, the proposed contract-consumer test plan |
 | [`status.md`](status.md) | you need to know what is verified, per target, and what is not |
+| [`carikbot-conversation-reference.md`](carikbot-conversation-reference.md) | you evaluate typed menu/form/handoff conversation rendering for persona clients: candidate contract, threats, tests (research only, proposed) |
 | [`adr/`](adr/README.md) | you want to know why something is the way it is |
 | [`../hosts/README.md`](../hosts/README.md) | you build a native host |
 
@@ -36,7 +37,3 @@ A client template has no server-side concerns of its own; those rows point to wh
 | Deployment | `deployment.md`, `../hosts/README.md`, `../apps/web/README.md`, `../apps/desktop/README.md` |
 | Development workflows, repository guidelines | `development.md`, `../CONTRIBUTING.md`, `../.changesets/README.md` |
 | Agent instructions, skills | `../AGENTS.md` (incl. orchestrator & agent roles), `../.claude/agents/`, `../.claude/skills/` |
-
-## CarikBot conversation architecture reference (research only)
-
-[CarikBot concept evaluation](carikbot-conversation-reference.md) and [Bahasa Indonesia](carikbot-conversation-reference.id.md) document flow/menu/form ideas, current-versus-proposed status, provider boundaries, privacy risks, tests and cross-repository ownership. No chatbot engine or production API is added by this documentation.

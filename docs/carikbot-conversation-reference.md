@@ -2,8 +2,8 @@
 
 # CarikBot Reference — Safe Channel-Neutral Conversation UI
 
-**Document version** v1.0.0 | **Date** 2026-11-10 | **Status** F0 design reference; no runtime code, shipped API or platform parity implied.
-**Changeset** Research CarikBot menu/form/intent concepts for the product's presentation boundary, with explicit status, legal constraints, security and tests.
+**Document version** v1.1.0 | **Date** 2026-11-20 | **Status** F0 design reference, **proposal only**: no runtime code, shipped API or platform parity implied, and every adoption below stays a proposal until gate 9 (cross-spec Definition of Ready) in this repository.
+**Changeset** Re-checked against `main` after the 20 November 2026 contract validation: current-status wording and cross-references added, unverifiable ownership claims about other products removed; Indonesian mirror rewritten as a faithful translation.
 
 ## Verified reference and limits
 [CarikBot ecosystem](https://github.com/CarikBot/ecosystem) describes a mind-map-to-JSON interaction tree, category/package manifests, and generic text/menu/button/form responses. The [API specification](https://github.com/CarikBot/ecosystem/blob/main/docs/api-structure.md) includes channel/user metadata, action callbacks and form handlers. [Carik engine](https://github.com/luridarmawan/Carik) describes older SimpleBOT/SimpleAI, FastPlaz and Pascal handlers. The ecosystem's npm manifest advertises MIT but the engine's [LICENSE.txt](https://github.com/luridarmawan/Carik/blob/master/LICENSE.txt) gives no explicit permission to reuse engine code. **Take architecture ideas only**; do not import code or assume operational compatibility. The ecosystem test script is a placeholder, so there is no audited quality parity.
@@ -29,7 +29,7 @@
 ~~~
 
 ## Ownership, governance, and status
-**Existing:** only behavior explicitly present in current repository files and verified test environments is considered shipped. **Proposed:** this reference's response contract is a candidate, not a published OpenAPI schema. **External:** Hermes owns agent runtime; AWCMS owns tenant/canonical records, approvals and sender policy; OMES owns host assurance; derivative apps do not take ownership of provider credentials or new business data systems.
+**Existing:** only behavior explicitly present in current repository files and verified test environments is considered shipped. **Proposed:** this reference's response contract is a candidate, not a published OpenAPI schema. **External:** tenant and canonical records, approvals and sender policy belong to the backend (`awcms` or `awcms-one`); any agent runtime or provider channel belongs to its own product and is outside this repository. A derivative app does not take ownership of provider credentials or new business data systems.
 
 ## Threats and mandated negative tests
 | Threat | Test/acceptance |
@@ -65,7 +65,7 @@ WCAG 2.2 AA for web and equivalent accessibility semantics on native surfaces; O
 
 ## Specific boundary: LynxJS persona clients, no product backend ownership
 
-**Owning issue:** https://github.com/ahliweb/awcms-lynx/issues/11. Current verified status: [docs/status.md](status.md). Repo provides client API and host bridge with documented tests, but Android/iOS/HarmonyOS native hosts are **not verified** end to end. Do not claim all-native parity or include provider secrets.
+**Owning issue:** https://github.com/ahliweb/awcms-lynx/issues/11. Current verified status: [status.md](status.md). The repository provides a client API and host bridge with documented tests; per [contract-validation-2026-11.md](contract-validation-2026-11.md) (20 November 2026) none of those tests touches a live backend, and no such conversation-response operation appears among the operations that validation covered, so the contract above has no verified server counterpart. The Android, iOS and HarmonyOS native hosts are **not verified** end to end. Do not claim all-native parity or include provider secrets.
 
 ### Proposed renderer mapping
 | Conversation control | LynxJS client | Native host requirement |
@@ -78,7 +78,7 @@ WCAG 2.2 AA for web and equivalent accessibility semantics on native surfaces; O
 | persisted draft | restricted minimum client state | server owns canonical workflow state |
 
 ### Host/platform evidence
-Web and headless desktop contract evidence exists, but Android/iOS/HarmonyOS currently have reference sources without complete native device verification, per current docs/status.md. Do not introduce new platform controls before a host contract version and device-specific test evidence. Lynx for Web is a separate compatibility evaluation. Server API validates every action; client-side validation is usability only.
+Web and headless desktop contract evidence exists, but Android/iOS/HarmonyOS currently have reference sources without complete native device verification, per [status.md](status.md). Do not introduce new platform controls before a host contract version and device-specific test evidence. Lynx for Web is a separate compatibility evaluation. Server API validates every action; client-side validation is usability only.
 
 ### Acceptance
 1. Renderer passes unit tests against synthetic typed response fixtures.
@@ -93,4 +93,5 @@ Web and headless desktop contract evidence exists, but Android/iOS/HarmonyOS cur
 Do not alter production persona apps, release builds, or runtime dependencies as part of this research issue.
 
 ## Changelog
+- v1.1.0 (2026-11-20): Re-checked against `main`: status and contract-validation cross-references, ownership claims limited to what this repository can verify, proposal status stated, Indonesian mirror rewritten to match the English structure.
 - v1.0.0 (2026-11-10): Research scope, candidate contract, threats, acceptance; zero runtime changes.
