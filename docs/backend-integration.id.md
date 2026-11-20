@@ -4,6 +4,8 @@
 
 Apa yang dikirim klien, apa yang diharapkan kembali, dan apa yang belum ditawarkan oleh backend. Setiap fakta mengutip sumber backend tempat ia dibaca, pada 25 Oktober 2026 (awcms di `main` 8ceb80e, awcms-one di v0.18.0). Ketika backend berubah, ubah `packages/client` dan halaman ini dalam pull request yang sama.
 
+> **Diperiksa ulang pada 20 November 2026** terhadap awcms `main` 765e52c7 dan awcms-one `main` 66b9985a: [`contract-validation-2026-11.md`](contract-validation-2026-11.md) memuat bukti, klasifikasi tiap baris, dan keputusan yang masih terbuka. Baris yang dikoreksi pada putaran itu menyatakannya di kolom Catatan atau Dampak; baris lain dibaca ulang dan tidak berubah.
+
 ## Aturan bersama (kedua backend adalah awcms)
 
 | Aturan | Nilai | Sumber |
@@ -37,7 +39,7 @@ Klien mengubah setiap kegagalan menjadi `AwcmsApiError { kind: 'http'|'network'|
 | `me()` | `GET /api/v1/auth/me` | `{identityId, loginIdentifier, profileId, status, lastLoginAt}` | |
 | `session()` | `GET /api/v1/auth/session` | `{identityId, tenantId, displayName, roles, assuranceLevel, expiresAt, scopes}` | ditampilkan di Account |
 | `logout()` | `POST /api/v1/auth/logout` | — | sesi lokal tetap dihapus meskipun ini gagal |
-| `siteSearch()` | `GET /api/v1/site-search/query?q&type&locale&cursor` | `{items:[{resourceType, resourceId, url, title, snippet, locale, rank}], nextCursor, facets, query, locale}` | anonim, tenant dari Host, 60/menit/IP, `q` ≤ 128; `snippet` berupa HTML ter-escape → `snippetToText()` |
+| `siteSearch()` | `GET /api/v1/site-search/query?q&type&locale&cursor` | `{items:[{resourceType, resourceId, url, title, snippet, locale, rank}], nextCursor, facets, query, locale}` | anonim, tenant dari Host, atau dari `Origin` bila lintas-origin (ADR-0107; tanpa handler preflight, sehingga request dengan `X-Correlation-ID` diblokir di peramban), 60/menit/IP, `q` ≤ 128; `snippet` berupa HTML ter-escape → `snippetToText()` |
 | `feed()` | `GET /feed.json?locale` | JSON Feed 1.1 (tanpa envelope) | satu-satunya daftar postingan anonim |
 | `listPosts()` | `GET /api/v1/blog/posts?status=published&order=created_at` | `{posts, nextCursor}` | memerlukan sesi dengan izin baca `blog_content` |
 | `registerPush()` / `listPush()` / `deletePush()` | `/api/v1/push/subscriptions` `{transport:'fcm'\|'web_push', endpoint, keys?}` | `{subscription}` | sesi apa pun; iOS melalui FCM (tidak ada transport APNs) |
@@ -69,7 +71,7 @@ Token pelanggan: `cs_` + 43 base64url, **masa berlaku geser 30 hari** di sisi se
 | --- | --- | --- |
 | Lynx native (`fetch` di engine Lynx) | Tidak — `fetch` Lynx tidak memiliki CORS ([dokumentasi fetch Lynx](https://lynxjs.org/api/lynx-api/global/fetch.html)) | Panggilan langsung ke `PUBLIC_AWCMS_API_BASE_URL` |
 | Desktop Lynxtron | Tidak (engine yang sama) | Sama |
-| Lynx for Web (peramban) | Ya | Rute staf awcms **tidak** memiliki handler CORS; rute commerce awcms-one hanya mengizinkan domain tenant yang terdaftar. Sajikan aplikasi web dengan origin yang sama melalui reverse proxy untuk `/api` dan `/feed.json` (`apps/web/deploy/`), atau daftarkan origin web sebagai domain tenant (awcms-one) |
+| Lynx for Web (peramban) | Ya | Rute staf awcms **tidak** memiliki handler CORS; rute commerce awcms-one hanya mengizinkan domain tenant yang terdaftar. Sajikan aplikasi web dengan origin yang sama melalui reverse proxy untuk `/api` dan `/feed.json` (`apps/web/deploy/`). Mendaftarkan origin web sebagai domain tenant (awcms-one) **tidak cukup** dengan klien saat ini: preflight commerce hanya mengizinkan `content-type`, `authorization`, dan pada sebagian route `idempotency-key`, sedangkan klien selalu mengirim `X-Correlation-ID` (dibaca dari source, belum diamati di peramban) |
 
 ## Kekurangan
 
@@ -82,6 +84,6 @@ Setiap hal berikut menghambat aplikasi persona yang siap produksi, dan termasuk 
 | Turnstile pada login `full_online` | Masuk native tidak mungkin saat diaktifkan; aplikasi menjelaskannya | ahliweb/awcms |
 | Belum ada pembacaan REST anonim untuk postingan, halaman, produk | Konten berasal dari `/feed.json`, pencarian situs, dan indeks statis storefront | ahliweb/awcms, ahliweb/awcms-one |
 | Tidak ada CORS untuk rute staf | Build web memerlukan proxy dengan origin yang sama | ahliweb/awcms |
-| Belum ada push / registrasi perangkat untuk pelanggan (ADR-0048 awcms-one hanya mencakup Web Push) | Tidak ada push untuk aplikasi pelanggan | ahliweb/awcms-one |
-| Belum ada rute "keluar dari semua perangkat" untuk pelanggan | Hanya perangkat saat ini yang dapat dikeluarkan | ahliweb/awcms-one |
+| Belum ada push / registrasi perangkat native untuk pelanggan. Web Push untuk pelanggan kini ada di balik fitur `customerPush` per tenant (awcms-one #430, ADR-0048); transportnya dikunci `web_push` | Tidak ada push native untuk aplikasi pelanggan; klien belum punya metode untuk route Web Push | ahliweb/awcms-one |
+| Belum ada rute "keluar dari semua perangkat" untuk pelanggan (staf punya `POST /api/v1/auth/sessions/revoke-all`, yang belum dipanggil klien) | Hanya perangkat saat ini yang dapat dikeluarkan | ahliweb/awcms-one |
 | Belum ada berkas asosiasi deep-link / app-link yang disajikan oleh backend | Deep link memerlukan penyiapan di sisi produk | repositori produk |
