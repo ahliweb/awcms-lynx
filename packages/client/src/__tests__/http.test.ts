@@ -66,6 +66,73 @@ describe('envelope handling', () => {
   });
 });
 
+describe('X-Correlation-ID per target (ADR-0005)', () => {
+  const BEARER = 'bearer-secret-value-123';
+
+  test('native default: header sent, bearer sent', async () => {
+    const { http, calls } = client(() => ok(1));
+    await http.request({ method: 'GET', path: '/p', bearer: BEARER });
+    expect(calls[0]?.headers['X-Correlation-ID']).toBe('corr-1');
+  });
+
+  test('Web (sendCorrelationId false): header absent, other headers intact', async () => {
+    const { http, calls } = client(() => ok(1), { sendCorrelationId: false });
+    await http.request({ method: 'GET', path: '/p', bearer: BEARER, tenantId: 'tid' });
+    const headers = calls[0]?.headers ?? {};
+    expect('X-Correlation-ID' in headers).toBe(false);
+    expect(headers.Authorization).toBe(`Bearer ${BEARER}`);
+    expect(headers['X-AWCMS-Tenant-ID']).toBe('tid');
+    expect(headers.Accept).toBe('application/json');
+  });
+
+  test('a function is read per request, so a host learned later is honoured', async () => {
+    let web = false;
+    const { http, calls } = client(() => ok(1), { sendCorrelationId: () => !web });
+    await http.request({ method: 'GET', path: '/p' });
+    web = true;
+    await http.request({ method: 'GET', path: '/p' });
+    expect(calls[0]?.headers['X-Correlation-ID']).toBe('corr-1');
+    expect('X-Correlation-ID' in (calls[1]?.headers ?? {})).toBe(false);
+  });
+
+  test('Web: an error carries the server echo, else null, never an unsent client id', async () => {
+    const echoed = client(
+      () => fail(500, 'BOOM', 'boom', undefined, { 'X-Correlation-ID': 'server-echo' }),
+      { sendCorrelationId: false },
+    );
+    const withEcho = await echoed.http.request({ method: 'GET', path: '/p' }).catch((e) => e);
+    expect(isApiError(withEcho) && withEcho.correlationId).toBe('server-echo');
+
+    const silent = client(() => fail(500, 'BOOM'), { sendCorrelationId: false });
+    const noEcho = await silent.http.request({ method: 'GET', path: '/p' }).catch((e) => e);
+    expect(isApiError(noEcho) && noEcho.correlationId).toBeNull();
+
+    const down = client(
+      () => {
+        throw new Error('offline');
+      },
+      { sendCorrelationId: false },
+    );
+    const network = await down.http.request({ method: 'GET', path: '/p' }).catch((e) => e);
+    expect(isApiError(network) && network.correlationId).toBeNull();
+  });
+
+  test('the bearer never appears in an error, on either target', async () => {
+    for (const sendCorrelationId of [true, false]) {
+      const { http } = client(() => fail(401, 'AUTH_REQUIRED', 'no', { hint: 'x' }), {
+        sendCorrelationId,
+      });
+      const error = await http
+        .request({ method: 'GET', path: '/p', bearer: BEARER })
+        .catch((e) => e);
+      if (!isApiError(error)) throw new Error('expected AwcmsApiError');
+      const dump = JSON.stringify(error, Object.getOwnPropertyNames(error));
+      expect(dump.includes(BEARER)).toBe(false);
+      expect(String(error.stack).includes(BEARER)).toBe(false);
+    }
+  });
+});
+
 describe('correlation id and Retry-After', () => {
   test('sends X-Correlation-ID and captures the echoed one', async () => {
     const { http, calls } = client(() =>

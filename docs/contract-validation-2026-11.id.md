@@ -2,7 +2,7 @@
 
 # Validasi kontrak dua backend dan gap aplikasi persona — November 2026
 
-Catatan riset untuk issue #19, bertanggal 20 November 2026. Dokumen ini membaca ulang API yang dikonsumsi `packages/client` dari sumber backend, membandingkannya dengan [`backend-integration.md`](backend-integration.md), menilai ulang setiap gap yang terdokumentasi, dan mengusulkan rencana uji consumer-kontrak. Ia tidak mengubah kode, tidak menambah endpoint, dan tidak menyatakan target native mana pun berfungsi. Keputusan yang dibiarkan terbuka dicantumkan di bagian akhir untuk pemilik.
+Catatan riset untuk issue #19, bertanggal 20 November 2026. Dokumen ini membaca ulang API yang dikonsumsi `packages/client` dari sumber backend, membandingkannya dengan [`backend-integration.md`](backend-integration.md), menilai ulang setiap gap yang terdokumentasi, dan mengusulkan rencana uji consumer-kontrak. Ia tidak mengubah kode, tidak menambah endpoint, dan tidak menyatakan target native mana pun berfungsi. Keputusan yang dibiarkan terbuka bagi pemilik telah diambil pada 20 November 2026 dan dicatat di bagian akhir (§Keputusan pemilik); teks riset di atasnya tidak diubah dan masih membacanya sebagai terbuka.
 
 Posisi pekerjaan ini dalam alur pengembangan (ADR-0156 `ahliweb/awcms`, standar lintas-portofolio internal pemilik): masukan riset untuk pekerjaan kontrak dan Definition of Ready sebelum gerbang 9. Tidak ada issue implementasi di bawah yang boleh dibuka sebelum gerbang itu, dan tidak ada yang menyatakan gerbang lolos. ADR-0146 `ahliweb/awcms` masih berstatus **Proposed**, dan tidak ada ADR diterima yang meng-admit `awcms-lynx` secara nama; halaman ini tidak menyatakan sebaliknya.
 
@@ -155,9 +155,9 @@ Tidak satu pun boleh dibuka sebelum gerbang 9 lolos di repositori pemiliknya, da
 
 | # | Usulan | Repo | Bergantung pada | Catatan duplikasi |
 | --- | --- | --- | --- | --- |
-| R-1 | Pemeriksaan kesesuaian C1 klien terhadap OpenAPI terkunci | `awcms-lynx` | pilihan tooling `awcms` #1379 | jangan membangun generator mock kedua |
+| R-1 | Pemeriksaan kesesuaian C1 klien terhadap OpenAPI terkunci | `awcms-lynx` | paket fixture `awcms` #1379 (keputusan D-2); dilacak di #22 | jangan membangun generator mock kedua |
 | R-2 | `requestOtp()` menerima login WhatsApp hanya-telepon (F-06) | `awcms-lynx` | tidak ada | tidak ada |
-| R-3 | Runtime Web: `X-Correlation-ID` dapat dikonfigurasi atau dihilangkan, atau aturan hanya-proxy yang terdokumentasi (F-03, F-04) | `awcms-lynx` | keputusan D-3 | tidak ada |
+| R-3 | Runtime Web: `X-Correlation-ID` dapat dikonfigurasi atau dihilangkan, atau aturan hanya-proxy yang terdokumentasi (F-03, F-04) | `awcms-lynx` | keputusan D-3 (diambil, ADR-0005); selesai di #21 | tidak ada |
 | R-4 | Metode klien untuk keluar-dari-semua-perangkat staf dan preferensi push pelanggan, bila produk membutuhkannya | `awcms-lynx` | R-5, F-01 | jangan membungkus route yang tidak dipakai produk mana pun |
 | R-5 | Kode status permintaan OTP: selaraskan OpenAPI dan handler (F-05) | `awcms-one` | tidak ada | tambahkan ke `awcms-one` #547 sebagai komentar, bukan issue baru |
 | R-6 | Entri kontrak untuk `feed.json` dan indeks statis (F-07) | `awcms`, `awcms-one` | `awcms` #1379 | tutup di dalam #547 dan #1379 |
@@ -168,13 +168,17 @@ Tidak satu pun boleh dibuka sebelum gerbang 9 lolos di repositori pemiliknya, da
 
 Definition of Ready untuk masing-masing: layar atau panggilan ditempatkan di alur, kontrak dan path OpenAPI-nya ada, repositori pemilik disebut, otorisasi per-sumber-daya dinyatakan, dan sebuah tes (C1 atau C2) yang gagal saat drift dijelaskan. R-7 tambahan membutuhkan model ancaman dan tinjauan pelindungan data sebelum gerbang 9 (ADR-0146 §6, butir 6 dan 10).
 
-## Keputusan yang menunggu pemilik
+## Keputusan pemilik
 
-| ID | Keputusan | Opsi | Rekomendasi |
+Diambil pemilik pada 20 November 2026 lewat dialog pilihan; tabel di atas bagian ini mencatatnya sebagai terbuka saat riset ditulis. Hanya D-3 yang mengubah repositori ini; D-1 dan D-2 adalah posisi yang dicatat repositori ini.
+
+| ID | Keputusan | Opsi terpilih | Dampak di sini |
 | --- | --- | --- | --- |
-| D-1 | Menerima ADR-0146 agar R-7 dapat mulai, atau menjaga aplikasi persona di tingkat PoC | terima sekarang; terima setelah PoC; biarkan Proposed | terima setelah PoC pertama, agar ADR mencatat bukti |
-| D-2 | Opsi tooling kontrak mana yang dipilih `awcms` #1379 sebelum R-1 | alat OpenAPI; fixture; generator kecil | ikuti riset #1379; tidak diputuskan di sini |
-| D-3 | Di mana F-04 diperbaiki | klien menghilangkan header di Web; `awcms-one` mengizinkan `x-correlation-id` di preflight-nya; pertahankan aturan hanya-proxy | pertahankan aturan hanya-proxy sekarang dan jadikan header opsional di Web (perubahan terkecil, tanpa edit backend) |
+| D-1 | Menerima ADR-0146 `awcms` (aplikasi persona, masih Proposed di sana) agar R-7 dapat mulai | terima setelah PoC pertama | Tidak ada yang berubah sampai PoC selesai; aplikasi persona tetap di tingkat PoC dan R-7 menunggu |
+| D-2 | Tooling kontrak untuk `awcms` #1379 | opsi C′: generator di dalam `awcms`, ditambah paket fixture terpatok yang diterbitkan untuk konsumen (ADR-nya sedang dibuat dan belum bernomor) | Pemeriksaan kesesuaian klien (R-1) akan memakai paket fixture itu; dilacak di #22, menunggu paket dan gerbang 9 |
+| D-3 | Di mana F-04 diperbaiki | pertahankan aturan hanya-proxy; `X-Correlation-ID` menjadi opsional di target Web; target native tetap mengirimnya; `awcms-one` tidak diminta mengubah allowlist-nya | Diimplementasikan di #21; dicatat sebagai [ADR-0005](adr/0005-correlation-id-is-optional-on-the-web-target.md) |
+
+D-3 memiliki ADR sendiri karena mengubah perilaku klien dan dipilih di antara opsi dengan dampak keamanan dan kompatibilitas berbeda. D-1 dan D-2 adalah posisi atas keputusan repositori lain dan tidak mengubah kode di sini, sehingga dicatat di tabel ini dan di [`status.md`](status.md), bukan di ADR.
 
 ## Reproduce
 

@@ -14,6 +14,7 @@ Threat model, controls, and the standards they answer to. The backend is the sec
 | Transport | Interception | `normaliseBaseUrl` refuses non-https except loopback/private LAN; native hosts keep platform TLS defaults (ATS, Network Security Config) |
 | Rendering injected markup | XSS through search snippets | Lynx `<text>` renders text, not HTML; `snippetToText()` strips tags and decodes entities |
 | Web host | XSS stealing the browser-stored session | CSP and security headers in `apps/web/deploy/`; `sessionStorage` by default for staff; same-origin API |
+| Request tracing on Web | A custom header forces a CORS preflight the backends refuse | `X-Correlation-ID` is not sent on the Web target, only on native targets; the proxy-only rule stays; error objects never carry the bearer or request headers (ADR-0005) |
 | Abuse | Credential stuffing, OTP brute force | Server-side limits (login 20/min, OTP 5/h); the app shows `Retry-After` |
 
 ## Rules for contributors

@@ -76,7 +76,7 @@ Server-side data — tenants, users, roles, content, products, orders, audit log
 | --- | --- | --- |
 | Authentication | sign-in screens, session storage | issues, verifies and revokes tokens |
 | Authorization | shows roles from `GET /auth/session`; hides nothing for security | decides everything: RBAC + ABAC, default deny, RLS |
-| Audit logging | sends `X-Correlation-ID` on every request so server audit entries can be traced to a client call | writes the audit log |
+| Audit logging | sends `X-Correlation-ID` on every native request so server audit entries can be traced to a client call (the Web target omits it, ADR-0005) | writes the audit log |
 | Content, taxonomy, publishing | reads published content (feed, search, storefront index) | editorial workflow in the Astro admin |
 | Media | renders image URLs the API returns | upload, storage (R2), visibility |
 | Branding / logo | `appName`, tokens in `app.css`, host icons | site profile, logo management in the admin |
