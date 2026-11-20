@@ -2,6 +2,8 @@
 
 What the client sends, what it expects back, and what the backends do not offer yet. Every fact cites the backend source it was read from on 25 October 2026 (awcms at `main` 8ceb80e, awcms-one at v0.18.0). When a backend changes, change `packages/client` and this page in the same pull request.
 
+> **Re-checked on 20 November 2026** against awcms `main` 765e52c7 and awcms-one `main` 66b9985a: [`contract-validation-2026-11.md`](contract-validation-2026-11.md) holds the evidence, the classification of each row and the open decisions. Rows corrected by that pass say so in their Notes or Effect column; every other row was re-read and is unchanged.
+
 ## Shared rules (both backends are awcms)
 
 | Rule | Value | Source |
@@ -35,7 +37,7 @@ The client turns every failure into `AwcmsApiError { kind: 'http'|'network'|'tim
 | `me()` | `GET /api/v1/auth/me` | `{identityId, loginIdentifier, profileId, status, lastLoginAt}` | |
 | `session()` | `GET /api/v1/auth/session` | `{identityId, tenantId, displayName, roles, assuranceLevel, expiresAt, scopes}` | shown on Account |
 | `logout()` | `POST /api/v1/auth/logout` | — | local session is cleared even if this fails |
-| `siteSearch()` | `GET /api/v1/site-search/query?q&type&locale&cursor` | `{items:[{resourceType, resourceId, url, title, snippet, locale, rank}], nextCursor, facets, query, locale}` | anonymous, tenant from Host, 60/min/IP, `q` ≤ 128; `snippet` is escaped HTML → `snippetToText()` |
+| `siteSearch()` | `GET /api/v1/site-search/query?q&type&locale&cursor` | `{items:[{resourceType, resourceId, url, title, snippet, locale, rank}], nextCursor, facets, query, locale}` | anonymous, tenant from Host, or from `Origin` when cross-origin (ADR-0107; no preflight handler, so a request with `X-Correlation-ID` is blocked in a browser), 60/min/IP, `q` ≤ 128; `snippet` is escaped HTML → `snippetToText()` |
 | `feed()` | `GET /feed.json?locale` | JSON Feed 1.1 (not enveloped) | the only anonymous post listing |
 | `listPosts()` | `GET /api/v1/blog/posts?status=published&order=created_at` | `{posts, nextCursor}` | needs a session with `blog_content` read permission |
 | `registerPush()` / `listPush()` / `deletePush()` | `/api/v1/push/subscriptions` `{transport:'fcm'\|'web_push', endpoint, keys?}` | `{subscription}` | any session; iOS goes through FCM (no APNs transport) |
@@ -67,7 +69,7 @@ Customer token: `cs_` + 43 base64url, **30 days sliding** server-side, `me` retu
 | --- | --- | --- |
 | Native Lynx (`fetch` in the Lynx engine) | No — Lynx `fetch` has no CORS ([Lynx fetch docs](https://lynxjs.org/api/lynx-api/global/fetch.html)) | Calls go straight to `PUBLIC_AWCMS_API_BASE_URL` |
 | Lynxtron desktop | No (same engine) | Same |
-| Lynx for Web (browser) | Yes | awcms staff routes have **no** CORS handler; awcms-one commerce routes allow only registered tenant domains. Serve the web app same-origin with a reverse proxy for `/api` and `/feed.json` (`apps/web/deploy/`), or register the web origin as a tenant domain (awcms-one) |
+| Lynx for Web (browser) | Yes | awcms staff routes have **no** CORS handler; awcms-one commerce routes allow only registered tenant domains. Serve the web app same-origin with a reverse proxy for `/api` and `/feed.json` (`apps/web/deploy/`). Registering the web origin as a tenant domain (awcms-one) is **not enough** with the current client: the commerce preflight allows only `content-type`, `authorization` and, on some routes, `idempotency-key`, and the client always sends `X-Correlation-ID` (read from source, not observed in a browser) |
 
 ## Gaps
 
@@ -80,6 +82,6 @@ Each of these blocks a production-grade persona app and belongs to the **backend
 | Turnstile on `full_online` login | Native sign-in impossible when enabled; the app explains it | ahliweb/awcms |
 | No anonymous REST read for posts, pages, products | Content comes from `/feed.json`, site search and the storefront's static index | ahliweb/awcms, ahliweb/awcms-one |
 | No CORS for staff routes | Web builds need a same-origin proxy | ahliweb/awcms |
-| No customer push / device registration (awcms-one ADR-0048 covers Web Push only) | No push for the customer app | ahliweb/awcms-one |
-| No customer "sign out everywhere" route | Only the current device can be signed out | ahliweb/awcms-one |
+| No native customer push / device registration. Web Push for customers now exists behind the per-tenant `customerPush` feature (awcms-one #430, ADR-0048); the transport is fixed to `web_push` | No native push for the customer app; the client has no method for the Web Push routes | ahliweb/awcms-one |
+| No customer "sign out everywhere" route (staff have `POST /api/v1/auth/sessions/revoke-all`, which the client does not call yet) | Only the current device can be signed out | ahliweb/awcms-one |
 | No deep-link / app-link association files served by the backends | Deep links need product-side setup | product repository |

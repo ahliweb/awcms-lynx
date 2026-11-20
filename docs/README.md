@@ -10,6 +10,7 @@
 | [`testing.md`](testing.md) | you add or run tests |
 | [`deployment.md`](deployment.md) | you ship a target: iOS, Android, HarmonyOS, Web, macOS, Windows |
 | [`development.md`](development.md) | you set up, run the daily loop, open a PR or cut a release |
+| [`contract-validation-2026-11.md`](contract-validation-2026-11.md) | you need the evidence behind the backend contract: pinned SHAs, per-operation matrices, re-assessed gaps, the proposed contract-consumer test plan |
 | [`status.md`](status.md) | you need to know what is verified, per target, and what is not |
 | [`adr/`](adr/README.md) | you want to know why something is the way it is |
 | [`../hosts/README.md`](../hosts/README.md) | you build a native host |

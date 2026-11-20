@@ -29,5 +29,5 @@ Terakhir diperbarui 25 Oktober 2026. "Terverifikasi" berarti telah dijalankan di
 
 - **Versi Lynx.** Paket JS: `@lynx-js/react` 0.129.2, `@lynx-js/rspeedy` 0.18.5, `@lynx-js/web-core` 0.26.5, Lynxtron 0.0.30. Sampel native resmi mem-pin Lynx 3.8.x (Android/Harmony) sementara dokumentasi dan Explorer berada di 4.x; sebuah produk memilih satu versi engine untuk semua host native.
 - **Penyimpanan session**: hanya didukung hardware pada host native (setelah dikompilasi); desktop menggunakan file khusus pemilik (`app-file`, Lynxtron 0.0.30 tidak memiliki API keyring); Web menggunakan penyimpanan browser.
-- **Celah backend** yang membuat aplikasi persona tetap berada pada tingkat PoC dicantumkan di [`backend-integration.md`](backend-integration.md#gaps).
+- **Celah backend** yang membuat aplikasi persona tetap berada pada tingkat PoC dicantumkan di [`backend-integration.md`](backend-integration.md#gaps); pemeriksaan ulang 20 November 2026, dengan klasifikasi tiap gap dan temuan bahwa tidak ada tes di sini yang menyentuh backend live, ada di [`contract-validation-2026-11.md`](contract-validation-2026-11.md).
 - **Tidak termasuk di v1**: deep link, pengambilan push token, kamera/lokasi/barcode, cache offline — masing-masing memerlukan kenaikan host-contract (konsekuensi ADR-0003).
