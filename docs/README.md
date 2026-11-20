@@ -23,7 +23,7 @@ A client template has no server-side concerns of its own; those rows point to wh
 
 | Topic | Where |
 | --- | --- |
-| Architecture | `architecture.md`, ADR-0001…0004 |
+| Architecture | `architecture.md`, ADR-0001…0005 |
 | Database schema / data dictionary | `architecture.md` §Data the client keeps (two secure-storage records); server schema lives in the backend repositories |
 | API documentation | `backend-integration.md`, `../packages/client/README.md` |
 | CMS / content management, publishing workflow, content taxonomy | `architecture.md` §Where each concern lives — content is managed and published in the backend's Astro admin; the app reads published content only (feed, site search with `type` filter, storefront news `rubrik`/`region`) |

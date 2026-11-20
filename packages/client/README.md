@@ -56,7 +56,7 @@ Everything throws `AwcmsApiError { kind, status, code, details?, correlationId, 
 | `envelope` | 2xx but not JSON / not `{success, data}` (status kept) | `BAD_ENVELOPE` |
 | `config` | caller mistake, raised before any request | `NOT_SIGNED_IN`, `WRONG_BACKEND`, `STOREFRONT_NOT_CONFIGURED`, `IDEMPOTENCY_KEY_INVALID`, `SEARCH_QUERY_INVALID`, `OTP_*`, `PUSH_KEYS_*`, `MFA_CODE_REQUIRED` |
 
-`correlationId` is the server's echoed `X-Correlation-ID` (falls back to the id the client sent). Tokens are never logged and never stored in errors. Async methods always reject; none throws synchronously.
+`correlationId` is the server's echoed `X-Correlation-ID` (falls back to the id the client sent; `null` on the Web target, which sends none, when the echo is unreadable). Tokens are never logged and never stored in errors. Async methods always reject; none throws synchronously.
 
 ## Backend facts encoded here
 
@@ -65,7 +65,7 @@ Verified from the backend source.
 ### Shared envelope (`ahliweb/awcms` `src/modules/_shared/api-response.ts`)
 
 - Success `{ success: true, data, meta: {} }`; error `{ success: false, error: { code, message, details? }, meta: {} }`; 204 has no body. Any 2xx is success (awcms-one's OTP request is documented 202 but returns 200).
-- `X-Correlation-ID` is sent per request and echoed. 429 carries `Retry-After` (seconds). Paths are versioned `/api/v1`.
+- `X-Correlation-ID` is sent per request and echoed on native targets; `ClientConfig.sendCorrelationId` (boolean or function, default true) turns it off, and the app does so on the Web host (ADR-0005). 429 carries `Retry-After` (seconds). Paths are versioned `/api/v1`.
 - `Idempotency-Key`: `^[!-~]{1,255}$`, validated client-side before the request.
 - Common codes: 401 `AUTH_REQUIRED`, 403 `ACCESS_DENIED`, 400 `VALIDATION_ERROR` / `TENANT_REQUIRED` / `IDEMPOTENCY_KEY_INVALID`, 409 `IDEMPOTENCY_CONFLICT`, 413 `PAYLOAD_TOO_LARGE`, 429 `RATE_LIMITED`.
 

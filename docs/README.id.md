@@ -25,7 +25,7 @@ Templat klien tidak memiliki tanggung jawab sisi server sendiri; baris-baris di 
 
 | Topik | Lokasi |
 | --- | --- |
-| Arsitektur | `architecture.md`, ADR-0001…0004 |
+| Arsitektur | `architecture.md`, ADR-0001…0005 |
 | Skema database / kamus data | `architecture.md` §Data yang disimpan klien (dua rekaman penyimpanan aman); skema server berada di repositori backend |
 | Dokumentasi API | `backend-integration.md`, `../packages/client/README.md` |
 | CMS / manajemen konten, alur publikasi, taksonomi konten | `architecture.md` §Lokasi setiap tanggung jawab — konten dikelola dan dipublikasikan di admin Astro milik backend; aplikasi hanya membaca konten yang sudah dipublikasikan (feed, pencarian situs dengan filter `type`, berita storefront `rubrik`/`region`) |

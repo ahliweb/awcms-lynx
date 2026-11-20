@@ -6,7 +6,7 @@ import {
   type HostBridge,
   type RuntimeConfig,
 } from '@awcms-lynx/platform';
-import { useEffect, useMemo, useState } from '@lynx-js/react';
+import { useEffect, useMemo, useRef, useState } from '@lynx-js/react';
 import { Loading } from './components/Screen.tsx';
 import { type Tab, TabBar } from './components/TabBar.tsx';
 import { AppProvider, type AppServices } from './context.tsx';
@@ -41,8 +41,17 @@ export function AwcmsApp({ config: baseConfig, bridge, client: injectedClient }:
   const [tab, setTab] = useState<TabKey>('home');
 
   const config = useMemo(() => ({ ...baseConfig, locale }), [baseConfig, locale]);
+  // The host kind arrives asynchronously from `app.info`; no API call happens
+  // before boot finishes (screens render only when `ready`). Until it is known
+  // the header is sent, the native default. The Web host omits it (ADR-0005).
+  const hostKind = useRef<AppInfo['host'] | null>(null);
   const client = useMemo(
-    () => injectedClient ?? createAwcmsClient({ ...baseConfig }, createSecureKeyValueStore(bridge)),
+    () =>
+      injectedClient ??
+      createAwcmsClient(
+        { ...baseConfig, sendCorrelationId: () => hostKind.current !== 'web' },
+        createSecureKeyValueStore(bridge),
+      ),
     [injectedClient, baseConfig, bridge],
   );
   const t = useMemo(() => createTranslator(locale), [locale]);
@@ -56,6 +65,7 @@ export function AwcmsApp({ config: baseConfig, bridge, client: injectedClient }:
         client.sessions.load().catch(() => null),
       ]);
       if (cancelled) return;
+      hostKind.current = info?.host ?? null;
       setAppInfo(info);
       const preferred = storedLocale?.value;
       if (preferred === 'en' || preferred === 'id') setLocale(preferred);

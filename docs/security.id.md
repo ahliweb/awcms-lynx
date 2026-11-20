@@ -16,6 +16,7 @@ Model ancaman, kontrol, dan standar yang menjadi acuannya. Backend adalah batas 
 | Transport | Penyadapan | `normaliseBaseUrl` menolak non-https kecuali loopback/LAN privat; host native mempertahankan default TLS platform (ATS, Network Security Config) |
 | Merender markup yang disisipkan | XSS melalui cuplikan pencarian | Teks `<text>` Lynx dirender sebagai teks, bukan HTML; `snippetToText()` menghapus tag dan mendekode entitas |
 | Host web | XSS yang mencuri sesi tersimpan di peramban | CSP dan header keamanan di `apps/web/deploy/`; `sessionStorage` secara default untuk staf; API dengan origin yang sama |
+| Penelusuran permintaan di Web | Header kustom memaksa preflight CORS yang ditolak backend | `X-Correlation-ID` tidak dikirim di target Web, hanya di target native; aturan hanya-proxy dipertahankan; objek error tidak pernah membawa bearer atau header permintaan (ADR-0005) |
 | Penyalahgunaan | Credential stuffing, brute force OTP | Batas di sisi server (login 20/menit, OTP 5/jam); aplikasi menampilkan `Retry-After` |
 
 ## Aturan untuk kontributor

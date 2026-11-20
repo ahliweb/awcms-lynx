@@ -1,6 +1,6 @@
 # Contract validation of the two backends and persona-app gaps — November 2026
 
-Research record for issue #19, dated 20 November 2026. It re-reads the API that `packages/client` consumes from the backend source, compares it with [`backend-integration.md`](backend-integration.md), re-assesses every documented gap, and proposes a contract-consumer test plan. It changes no code, adds no endpoint and does not claim that any native target works. Decisions it leaves open are listed at the end for the owner.
+Research record for issue #19, dated 20 November 2026. It re-reads the API that `packages/client` consumes from the backend source, compares it with [`backend-integration.md`](backend-integration.md), re-assesses every documented gap, and proposes a contract-consumer test plan. It changes no code, adds no endpoint and does not claim that any native target works. The decisions it left open for the owner were taken on 20 November 2026 and are recorded at the end (§Decisions of the owner); the research text above is unchanged and still reads them as open.
 
 Position of this work in the development flow (ADR-0156 of `ahliweb/awcms`, the owner's internal cross-portfolio standard): a research input to the contract and Definition of Ready work before gate 9. No implementation issue below may be opened before that gate, and nothing here declares the gate passed. `ahliweb/awcms` ADR-0146 is still **Proposed**, and no accepted ADR admits `awcms-lynx` by name; this page does not state otherwise.
 
@@ -153,9 +153,9 @@ None of these may be opened before gate 9 passes in the repository that owns the
 
 | # | Proposal | Repo | Depends on | Note on duplicates |
 | --- | --- | --- | --- | --- |
-| R-1 | C1 conformance check of the client against pinned OpenAPI | `awcms-lynx` | the tooling choice of `awcms` #1379 | do not build a second mock generator |
+| R-1 | C1 conformance check of the client against pinned OpenAPI | `awcms-lynx` | the fixture package of `awcms` #1379 (decision D-2); tracked in #22 | do not build a second mock generator |
 | R-2 | `requestOtp()` accepts a phone-only WhatsApp login (F-06) | `awcms-lynx` | none | none |
-| R-3 | Web runtime: configurable or omitted `X-Correlation-ID`, or documented proxy-only rule (F-03, F-04) | `awcms-lynx` | decision D-3 | none |
+| R-3 | Web runtime: configurable or omitted `X-Correlation-ID`, or documented proxy-only rule (F-03, F-04) | `awcms-lynx` | decision D-3 (taken, ADR-0005); done in #21 | none |
 | R-4 | Client methods for staff sign-out-everywhere and customer push preferences, if a product needs them | `awcms-lynx` | R-5, F-01 | do not wrap routes no product uses |
 | R-5 | OTP request status code: align OpenAPI and handler (F-05) | `awcms-one` | none | add to `awcms-one` #547 as a comment, not a new issue |
 | R-6 | Contract entries for `feed.json` and the static indexes (F-07) | `awcms`, `awcms-one` | `awcms` #1379 | cover inside #547 and #1379 |
@@ -166,13 +166,17 @@ None of these may be opened before gate 9 passes in the repository that owns the
 
 Definition of Ready for each: the screen or call is placed in the flow, the contract and its OpenAPI path exist, the owner repository is named, per-resource authorisation is stated, and a test (C1 or C2) that fails on drift is described. R-7 additionally needs a threat model and a data-protection review before gate 9 (ADR-0146 §6, items 6 and 10).
 
-## Decisions waiting for the owner
+## Decisions of the owner
 
-| ID | Decision | Options | Recommendation |
+Taken by the owner on 20 November 2026 through a choice dialog; the table above this section recorded them as open when the research was written. Only D-3 changes this repository; D-1 and D-2 are positions this repository records.
+
+| ID | Decision | Chosen option | Effect here |
 | --- | --- | --- | --- |
-| D-1 | Accept ADR-0146 so R-7 can start, or keep persona apps at PoC grade | accept now; accept after a PoC; leave Proposed | accept after the first PoC, so the ADR records evidence |
-| D-2 | Which contract-tooling option `awcms` #1379 should choose before R-1 | OpenAPI tool; fixtures; small generator | follow the #1379 research; do not decide here |
-| D-3 | Where F-04 is fixed | the client omits the header on Web; `awcms-one` allows `x-correlation-id` in its preflights; keep the proxy-only rule | keep the proxy-only rule now and make the header optional on Web (smallest change, no backend edit) |
+| D-1 | Accept ADR-0146 of `awcms` (persona apps, still Proposed there) so R-7 can start | accept after the first PoC | Nothing changes until a PoC is done; persona apps stay at PoC grade and R-7 waits |
+| D-2 | Contract tooling for `awcms` #1379 | option C′: generator inside `awcms`, plus a pinned fixture package published for consumers (the ADR is being written and has no number yet) | The client conformance check (R-1) will consume that fixture package; tracked in #22, blocked on the package and on gate 9 |
+| D-3 | Where F-04 is fixed | keep the proxy-only rule; `X-Correlation-ID` becomes optional on the Web target; native targets keep sending it; `awcms-one` is not asked to change its allowlist | Implemented in #21; recorded as [ADR-0005](adr/0005-correlation-id-is-optional-on-the-web-target.md) |
+
+D-3 has its own ADR because it changes client behaviour and was chosen among options with different security and compatibility effects. D-1 and D-2 are positions on other repositories' decisions and change no code here, so they are recorded in this table and in [`status.md`](status.md) instead of an ADR.
 
 ## Reproduce
 

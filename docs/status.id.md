@@ -2,13 +2,13 @@
 
 # Status — apa yang telah diverifikasi, per target
 
-Terakhir diperbarui 25 Oktober 2026. "Terverifikasi" berarti telah dijalankan di lingkungan repositori ini (Linux, Bun 1.4.4, Node 22.22) atau CI; selebihnya diberi label. Sebuah produk turunan menyalin halaman ini dan mengisi hasil PoC-nya sendiri (awcms-one ADR-0050 D6, awcms ADR-0146 §5).
+Terakhir diperbarui 20 November 2026. "Terverifikasi" berarti telah dijalankan di lingkungan repositori ini (Linux, Bun 1.4.4, Node 22.22) atau CI; selebihnya diberi label. Sebuah produk turunan menyalin halaman ini dan mengisi hasil PoC-nya sendiri (awcms-one ADR-0050 D6, awcms ADR-0146 §5).
 
 ## Blok penyusun
 
 | Komponen | Status | Bukti |
 | --- | --- | --- |
-| `@awcms-lynx/client` (kedua profil backend) | Terverifikasi lewat unit test terhadap kontrak yang terdokumentasi; **belum** dijalankan terhadap backend live di sini | `bun test packages/client` (119 test) |
+| `@awcms-lynx/client` (kedua profil backend) | Terverifikasi lewat unit test terhadap kontrak yang terdokumentasi; **belum** dijalankan terhadap backend live di sini. `X-Correlation-ID` dihilangkan di host Web dan dikirim di host native, dicakup unit test klien dan satu tes wiring tingkat aplikasi | `bun test packages/client` (124 test) |
 | Kontrak `@awcms-lynx/platform`, bridge, konfigurasi runtime | Terverifikasi | `bun test packages/platform` |
 | Host JS terhadap 74 vektor kontrak | Terverifikasi (host web dan desktop) | `tests/contract-vectors.test.ts` |
 | UI `@awcms-lynx/app` (kedua profil) | Terverifikasi di test renderer ReactLynx | `bun run test:ui` |
@@ -31,3 +31,11 @@ Terakhir diperbarui 25 Oktober 2026. "Terverifikasi" berarti telah dijalankan di
 - **Penyimpanan session**: hanya didukung hardware pada host native (setelah dikompilasi); desktop menggunakan file khusus pemilik (`app-file`, Lynxtron 0.0.30 tidak memiliki API keyring); Web menggunakan penyimpanan browser.
 - **Celah backend** yang membuat aplikasi persona tetap berada pada tingkat PoC dicantumkan di [`backend-integration.md`](backend-integration.md#gaps); pemeriksaan ulang 20 November 2026, dengan klasifikasi tiap gap dan temuan bahwa tidak ada tes di sini yang menyentuh backend live, ada di [`contract-validation-2026-11.md`](contract-validation-2026-11.md).
 - **Tidak termasuk di v1**: deep link, pengambilan push token, kamera/lokasi/barcode, cache offline — masing-masing memerlukan kenaikan host-contract (konsekuensi ADR-0003).
+
+## Keputusan pemilik 20 November 2026
+
+Sumber: validasi kontrak issue #19 ([`contract-validation-2026-11.md`](contract-validation-2026-11.md)). Dicatat sebagai keputusan pemilik; tidak satu pun merupakan bukti bahwa sebuah target berfungsi.
+
+- **D-1.** ADR-0146 `awcms` (aplikasi persona, masih Proposed di sana) akan diterima setelah proof of concept pertama, bukan sekarang. Repositori ini tidak mengubah apa pun sampai ada PoC; aplikasi persona tetap di tingkat PoC.
+- **D-2.** Tooling kontrak mengikuti opsi C′ `awcms`: generator di dalam `awcms` dan paket fixture terpatok yang diterbitkan untuk konsumen (`awcms` #1379; ADR-nya belum bernomor). Pemeriksaan kesesuaian klien akan memakai paket itu dan dilacak di #22, menunggu paket dan gerbang 9.
+- **D-3.** Aturan hanya-proxy dipertahankan; `X-Correlation-ID` opsional di target Web dan tetap dikirim di target native ([ADR-0005](adr/0005-correlation-id-is-optional-on-the-web-target.md), issue #21). `awcms-one` tidak diminta mengubah allowlist CORS-nya. Belum diamati di peramban; perilaku preflight adalah pembacaan source backend.

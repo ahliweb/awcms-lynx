@@ -78,7 +78,7 @@ Data sisi server — tenant, pengguna, peran, konten, produk, pesanan, audit log
 | --- | --- | --- |
 | Autentikasi | layar masuk, penyimpanan sesi | menerbitkan, memverifikasi, dan mencabut token |
 | Otorisasi | menampilkan peran dari `GET /auth/session`; tidak menyembunyikan apa pun demi keamanan | memutuskan semuanya: RBAC + ABAC, default deny, RLS |
-| Audit logging | mengirim `X-Correlation-ID` pada setiap permintaan agar entri audit server dapat ditelusuri ke panggilan klien | menulis audit log |
+| Audit logging | mengirim `X-Correlation-ID` pada setiap permintaan native agar entri audit server dapat ditelusuri ke panggilan klien (target Web menghilangkannya, ADR-0005) | menulis audit log |
 | Konten, taksonomi, publikasi | membaca konten yang sudah dipublikasikan (feed, pencarian, indeks storefront) | alur editorial di admin Astro |
 | Media | merender URL gambar yang dikembalikan API | unggah, penyimpanan (R2), visibilitas |
 | Branding / logo | `appName`, token di `app.css`, ikon host | profil situs, manajemen logo di admin |

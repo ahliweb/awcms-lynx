@@ -31,7 +31,7 @@ export class AwcmsApiError extends Error {
   readonly status: number;
   readonly code: string;
   readonly details?: unknown;
-  /** `X-Correlation-ID` echoed by the server (falls back to the id we sent). Quote it in bug reports. */
+  /** `X-Correlation-ID` echoed by the server (falls back to the id we sent; null on the Web target, which sends none, when the echo is unreadable). Quote it in bug reports. */
   readonly correlationId: string | null;
   /** From the `Retry-After` header of a 429, in whole seconds. */
   readonly retryAfterSeconds: number | null;

@@ -31,6 +31,13 @@ export interface ClientConfig {
    * it, `Origin` being a forbidden header name there).
    */
   originHeader?: string | null;
+  /**
+   * Whether to send `X-Correlation-ID`. Default true (native targets, which
+   * have no CORS). The Web target sets false: a browser sends a preflight for
+   * this header and neither backend allows it cross-origin (ADR-0005). May be
+   * a function so a host kind learned after start-up (`app.info`) is honoured.
+   */
+  sendCorrelationId?: boolean | (() => boolean);
   /** Per-request timeout. Default 15000. */
   timeoutMs?: number;
   fetch?: typeof fetch;

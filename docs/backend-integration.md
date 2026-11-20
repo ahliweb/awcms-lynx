@@ -12,7 +12,7 @@ What the client sends, what it expects back, and what the backends do not offer 
 | Success | `{ "success": true, "data": T, "meta": {} }`, any 2xx | awcms `src/modules/_shared/api-response.ts` |
 | Error | `{ "success": false, "error": { "code", "message", "details"? }, "meta": {} }` | same |
 | No content | `204` with empty body | e.g. awcms-one `…/account/logout.ts` |
-| Correlation | client sends `X-Correlation-ID`; server echoes it on every response | awcms `src/middleware.ts` |
+| Correlation | native targets send `X-Correlation-ID` and the server echoes it on every response; the Web target does not send it (a browser would preflight it and the backends refuse it cross-origin, ADR-0005) | awcms `src/middleware.ts` |
 | Idempotency | `Idempotency-Key`, 1–255 visible ASCII; same key + same body replays, different body → `409 IDEMPOTENCY_CONFLICT` | awcms `src/lib/security/idempotency-key-bound.ts`, `src/modules/_shared/idempotency.ts` |
 | Rate limit | `429 RATE_LIMITED` + `Retry-After` seconds | awcms `src/lib/security/rate-limit.ts` |
 | Body limit | 128 KiB default | awcms `src/lib/security/request-body-limit.ts` |
@@ -37,7 +37,7 @@ The client turns every failure into `AwcmsApiError { kind: 'http'|'network'|'tim
 | `me()` | `GET /api/v1/auth/me` | `{identityId, loginIdentifier, profileId, status, lastLoginAt}` | |
 | `session()` | `GET /api/v1/auth/session` | `{identityId, tenantId, displayName, roles, assuranceLevel, expiresAt, scopes}` | shown on Account |
 | `logout()` | `POST /api/v1/auth/logout` | — | local session is cleared even if this fails |
-| `siteSearch()` | `GET /api/v1/site-search/query?q&type&locale&cursor` | `{items:[{resourceType, resourceId, url, title, snippet, locale, rank}], nextCursor, facets, query, locale}` | anonymous, tenant from Host, or from `Origin` when cross-origin (ADR-0107; no preflight handler, so a request with `X-Correlation-ID` is blocked in a browser), 60/min/IP, `q` ≤ 128; `snippet` is escaped HTML → `snippetToText()` |
+| `siteSearch()` | `GET /api/v1/site-search/query?q&type&locale&cursor` | `{items:[{resourceType, resourceId, url, title, snippet, locale, rank}], nextCursor, facets, query, locale}` | anonymous, tenant from Host, or from `Origin` when cross-origin (ADR-0107; no preflight handler, so a request with `X-Correlation-ID` would be blocked in a browser, which is why the Web target omits it, ADR-0005), 60/min/IP, `q` ≤ 128; `snippet` is escaped HTML → `snippetToText()` |
 | `feed()` | `GET /feed.json?locale` | JSON Feed 1.1 (not enveloped) | the only anonymous post listing |
 | `listPosts()` | `GET /api/v1/blog/posts?status=published&order=created_at` | `{posts, nextCursor}` | needs a session with `blog_content` read permission |
 | `registerPush()` / `listPush()` / `deletePush()` | `/api/v1/push/subscriptions` `{transport:'fcm'\|'web_push', endpoint, keys?}` | `{subscription}` | any session; iOS goes through FCM (no APNs transport) |
@@ -69,7 +69,7 @@ Customer token: `cs_` + 43 base64url, **30 days sliding** server-side, `me` retu
 | --- | --- | --- |
 | Native Lynx (`fetch` in the Lynx engine) | No — Lynx `fetch` has no CORS ([Lynx fetch docs](https://lynxjs.org/api/lynx-api/global/fetch.html)) | Calls go straight to `PUBLIC_AWCMS_API_BASE_URL` |
 | Lynxtron desktop | No (same engine) | Same |
-| Lynx for Web (browser) | Yes | awcms staff routes have **no** CORS handler; awcms-one commerce routes allow only registered tenant domains. Serve the web app same-origin with a reverse proxy for `/api` and `/feed.json` (`apps/web/deploy/`). Registering the web origin as a tenant domain (awcms-one) is **not enough** with the current client: the commerce preflight allows only `content-type`, `authorization` and, on some routes, `idempotency-key`, and the client always sends `X-Correlation-ID` (read from source, not observed in a browser) |
+| Lynx for Web (browser) | Yes | awcms staff routes have **no** CORS handler; awcms-one commerce routes allow only registered tenant domains. Serve the web app same-origin with a reverse proxy for `/api` and `/feed.json` (`apps/web/deploy/`). Registering the web origin as a tenant domain (awcms-one) is **not enough** with the current client: the commerce preflight allows only `content-type`, `authorization` and, on some routes, `idempotency-key`, and a client that sends `X-Correlation-ID` fails the preflight (read from source, not observed in a browser). Decision of 20 November 2026 ([ADR-0005](adr/0005-correlation-id-is-optional-on-the-web-target.md)): the proxy-only rule stays and the Web target does not send that header; native targets still do |
 
 ## Gaps
 

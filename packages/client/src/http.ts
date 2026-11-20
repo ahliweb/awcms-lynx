@@ -16,6 +16,10 @@
  *
  * `X-Correlation-ID` is generated per request; the server echoes it and we put
  * it on every error so a user report can be matched to a server log line.
+ * On the Web target the header is not sent (`config.sendCorrelationId`,
+ * ADR-0005): a browser would preflight it and the backends refuse it. There
+ * the id on an error is the server's echo when readable, otherwise null,
+ * never a client-made id the server has never seen.
  */
 
 import { type ClientConfig, DEFAULT_TIMEOUT_MS } from './config.ts';
@@ -112,8 +116,14 @@ export function createHttpClient(config: ClientConfig): HttpClient {
     const headers: Record<string, string> = {
       Accept: 'application/json',
       'Accept-Language': config.locale,
-      'X-Correlation-ID': correlationId,
     };
+    const sendCorrelation =
+      typeof config.sendCorrelationId === 'function'
+        ? config.sendCorrelationId()
+        : config.sendCorrelationId !== false;
+    if (sendCorrelation) headers['X-Correlation-ID'] = correlationId;
+    // Id attached to errors: only an id the server could have seen.
+    const knownId = sendCorrelation ? correlationId : null;
     if (options.bearer) headers.Authorization = `Bearer ${options.bearer}`;
     if (options.tenantId) headers['X-AWCMS-Tenant-ID'] = options.tenantId;
     if (options.idempotencyKey !== undefined) headers['Idempotency-Key'] = options.idempotencyKey;
@@ -140,7 +150,7 @@ export function createHttpClient(config: ClientConfig): HttpClient {
           status: 0,
           code: 'NETWORK_ERROR',
           message: `Network request failed${cause instanceof Error ? `: ${cause.message}` : ''}`,
-          correlationId,
+          correlationId: knownId,
         });
       }
       let text: string;
@@ -152,12 +162,12 @@ export function createHttpClient(config: ClientConfig): HttpClient {
           status: 0,
           code: 'NETWORK_ERROR',
           message: 'Network request failed while reading the response body',
-          correlationId,
+          correlationId: knownId,
         });
       }
       return {
         status: response.status,
-        correlationId: response.headers.get('X-Correlation-ID') ?? correlationId,
+        correlationId: response.headers.get('X-Correlation-ID') ?? knownId,
         retryAfterSeconds: parseRetryAfter(response.headers.get('Retry-After')),
         text,
       };
@@ -173,7 +183,7 @@ export function createHttpClient(config: ClientConfig): HttpClient {
             status: 0,
             code: 'TIMEOUT',
             message: `Request timed out after ${timeoutMs} ms`,
-            correlationId,
+            correlationId: knownId,
           }),
         );
       }, timeoutMs);

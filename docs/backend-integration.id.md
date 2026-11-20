@@ -14,7 +14,7 @@ Apa yang dikirim klien, apa yang diharapkan kembali, dan apa yang belum ditawark
 | Sukses | `{ "success": true, "data": T, "meta": {} }`, status 2xx apa pun | awcms `src/modules/_shared/api-response.ts` |
 | Galat | `{ "success": false, "error": { "code", "message", "details"? }, "meta": {} }` | sama |
 | Tanpa konten | `204` dengan body kosong | misalnya awcms-one `…/account/logout.ts` |
-| Korelasi | klien mengirim `X-Correlation-ID`; server memantulkannya pada setiap respons | awcms `src/middleware.ts` |
+| Korelasi | target native mengirim `X-Correlation-ID` dan server memantulkannya pada setiap respons; target Web tidak mengirimnya (peramban akan melakukan preflight dan backend menolaknya lintas-origin, ADR-0005) | awcms `src/middleware.ts` |
 | Idempotensi | `Idempotency-Key`, 1–255 karakter ASCII tampak; kunci sama + body sama akan diputar ulang, body berbeda → `409 IDEMPOTENCY_CONFLICT` | awcms `src/lib/security/idempotency-key-bound.ts`, `src/modules/_shared/idempotency.ts` |
 | Batas laju | `429 RATE_LIMITED` + `Retry-After` dalam detik | awcms `src/lib/security/rate-limit.ts` |
 | Batas body | 128 KiB bawaan | awcms `src/lib/security/request-body-limit.ts` |
@@ -39,7 +39,7 @@ Klien mengubah setiap kegagalan menjadi `AwcmsApiError { kind: 'http'|'network'|
 | `me()` | `GET /api/v1/auth/me` | `{identityId, loginIdentifier, profileId, status, lastLoginAt}` | |
 | `session()` | `GET /api/v1/auth/session` | `{identityId, tenantId, displayName, roles, assuranceLevel, expiresAt, scopes}` | ditampilkan di Account |
 | `logout()` | `POST /api/v1/auth/logout` | — | sesi lokal tetap dihapus meskipun ini gagal |
-| `siteSearch()` | `GET /api/v1/site-search/query?q&type&locale&cursor` | `{items:[{resourceType, resourceId, url, title, snippet, locale, rank}], nextCursor, facets, query, locale}` | anonim, tenant dari Host, atau dari `Origin` bila lintas-origin (ADR-0107; tanpa handler preflight, sehingga request dengan `X-Correlation-ID` diblokir di peramban), 60/menit/IP, `q` ≤ 128; `snippet` berupa HTML ter-escape → `snippetToText()` |
+| `siteSearch()` | `GET /api/v1/site-search/query?q&type&locale&cursor` | `{items:[{resourceType, resourceId, url, title, snippet, locale, rank}], nextCursor, facets, query, locale}` | anonim, tenant dari Host, atau dari `Origin` bila lintas-origin (ADR-0107; tanpa handler preflight, sehingga request dengan `X-Correlation-ID` akan diblokir di peramban, karena itu target Web menghilangkannya, ADR-0005), 60/menit/IP, `q` ≤ 128; `snippet` berupa HTML ter-escape → `snippetToText()` |
 | `feed()` | `GET /feed.json?locale` | JSON Feed 1.1 (tanpa envelope) | satu-satunya daftar postingan anonim |
 | `listPosts()` | `GET /api/v1/blog/posts?status=published&order=created_at` | `{posts, nextCursor}` | memerlukan sesi dengan izin baca `blog_content` |
 | `registerPush()` / `listPush()` / `deletePush()` | `/api/v1/push/subscriptions` `{transport:'fcm'\|'web_push', endpoint, keys?}` | `{subscription}` | sesi apa pun; iOS melalui FCM (tidak ada transport APNs) |
@@ -71,7 +71,7 @@ Token pelanggan: `cs_` + 43 base64url, **masa berlaku geser 30 hari** di sisi se
 | --- | --- | --- |
 | Lynx native (`fetch` di engine Lynx) | Tidak — `fetch` Lynx tidak memiliki CORS ([dokumentasi fetch Lynx](https://lynxjs.org/api/lynx-api/global/fetch.html)) | Panggilan langsung ke `PUBLIC_AWCMS_API_BASE_URL` |
 | Desktop Lynxtron | Tidak (engine yang sama) | Sama |
-| Lynx for Web (peramban) | Ya | Rute staf awcms **tidak** memiliki handler CORS; rute commerce awcms-one hanya mengizinkan domain tenant yang terdaftar. Sajikan aplikasi web dengan origin yang sama melalui reverse proxy untuk `/api` dan `/feed.json` (`apps/web/deploy/`). Mendaftarkan origin web sebagai domain tenant (awcms-one) **tidak cukup** dengan klien saat ini: preflight commerce hanya mengizinkan `content-type`, `authorization`, dan pada sebagian route `idempotency-key`, sedangkan klien selalu mengirim `X-Correlation-ID` (dibaca dari source, belum diamati di peramban) |
+| Lynx for Web (peramban) | Ya | Rute staf awcms **tidak** memiliki handler CORS; rute commerce awcms-one hanya mengizinkan domain tenant yang terdaftar. Sajikan aplikasi web dengan origin yang sama melalui reverse proxy untuk `/api` dan `/feed.json` (`apps/web/deploy/`). Mendaftarkan origin web sebagai domain tenant (awcms-one) **tidak cukup** dengan klien saat ini: preflight commerce hanya mengizinkan `content-type`, `authorization`, dan pada sebagian route `idempotency-key`, sehingga klien yang mengirim `X-Correlation-ID` gagal di preflight (dibaca dari source, belum diamati di peramban). Keputusan 20 November 2026 ([ADR-0005](adr/0005-correlation-id-is-optional-on-the-web-target.md)): aturan hanya-proxy dipertahankan dan target Web tidak mengirim header itu; target native tetap mengirimnya |
 
 ## Kekurangan
 

@@ -3,6 +3,7 @@ import { AwcmsApp, ConfigErrorScreen } from '@awcms-lynx/app';
 import { createAwcmsClient } from '@awcms-lynx/client';
 import {
   createMemoryHostBridge,
+  type HostBridge,
   type RuntimeConfig,
   resolveRuntimeConfig,
 } from '@awcms-lynx/platform';
@@ -147,6 +148,44 @@ test('awcms: an unreachable backend is reported, and settings are honest about m
 
   fireEvent.tap(getByText('Account'));
   expect(await findByText('Email or username')).toBeInTheDocument();
+});
+
+test('the app omits X-Correlation-ID on the Web host and sends it on a native host (ADR-0005)', async () => {
+  const config = resolveRuntimeConfig({
+    backend: 'awcms',
+    apiBaseUrl: 'https://cms.example.id',
+    locale: 'en',
+  });
+  const realFetch = globalThis.fetch;
+  try {
+    for (const host of ['web', 'android'] as const) {
+      const seen: Array<Record<string, string>> = [];
+      globalThis.fetch = (async (_input: RequestInfo | URL, init?: RequestInit) => {
+        seen.push({ ...((init?.headers as Record<string, string> | undefined) ?? {}) });
+        return json(health);
+      }) as typeof fetch;
+      const memory = createMemoryHostBridge('0.1.0');
+      const bridge: HostBridge = {
+        transport: memory.transport,
+        async invoke(method, params) {
+          const reply = await memory.invoke(method, params);
+          return method === 'app.info'
+            ? ({ ...(reply as object), host } as never)
+            : (reply as never);
+        },
+      };
+      const { findByText, unmount } = render(<AwcmsApp config={config} bridge={bridge} />);
+      expect(await findByText('Settings')).toBeInTheDocument();
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(seen.length).toBeGreaterThan(0);
+      for (const headers of seen) {
+        expect('X-Correlation-ID' in headers).toBe(host !== 'web');
+      }
+      unmount();
+    }
+  } finally {
+    globalThis.fetch = realFetch;
+  }
 });
 
 test('a misconfigured build renders the configuration error instead of crashing', async () => {
