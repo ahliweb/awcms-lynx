@@ -13,6 +13,7 @@
 | [`deployment.md`](deployment.md) | Anda merilis target: iOS, Android, HarmonyOS, Web, macOS, Windows |
 | [`development.md`](development.md) | Anda menyiapkan lingkungan, menjalankan alur harian, membuka pull request, atau menerbitkan rilis |
 | [`contract-validation-2026-11.md`](contract-validation-2026-11.md) | Anda membutuhkan bukti di balik kontrak backend: SHA terkunci, matriks per operasi, gap yang dinilai ulang, usulan rencana tes consumer-kontrak |
+| [`fastplaz-concepts.md`](fastplaz-concepts.md) | Anda menilai usulan diagnostik build host per target yang diturunkan dari FastPlaz: batas, enam skenario, rubrik penerimaan (riset saja, usulan) |
 | [`status.md`](status.md) | Anda perlu tahu apa yang sudah terverifikasi per target dan apa yang belum |
 | [`adr/`](adr/README.md) | Anda ingin tahu mengapa sesuatu dibuat seperti itu |
 | [`../hosts/README.md`](../hosts/README.md) | Anda membangun host native |
