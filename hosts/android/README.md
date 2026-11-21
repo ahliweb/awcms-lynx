@@ -216,6 +216,7 @@ means the call type-checks against the pinned SDK — **no item was exercised on
 4. `JavaOnlyArray.of(...)` — **compiled** (`AwcmsLynxHost.kt`); delivery of the deep-link event to the bundle is unverified.
 5. `AbsTemplateProvider.Callback.onSuccess/onFailed` signatures — **compiled** (`AwcmsLynxHost.kt`).
 6. The androidx.security deprecation wording — **not verifiable by a build** (the library is deliberately not a dependency; `KeystoreSecureStore.kt`).
+7. Empty value round trip — **fixed, found by a downstream runtime spike (2026-11-21)**: `KeystoreSecureStore.decrypt` required `blob.size > 28`, but an empty value encrypts to exactly 28 bytes (12-byte IV + 16-byte GCM tag), so a valid empty entry was dropped and read as `null`, violating vector `storage.empty-value`. The bound is now inclusive (`isCompleteBlob`, unit-tested on the JVM by `KeystoreBlobSizeTest`); the full round trip still needs an instrumented test on a device.
 
 Also verified by the build: the manifest and backup/data-extraction rules merge and lint without errors, and
 the debug APK contains `assets/main.lynx.bundle`. Not verified: any run on a device or emulator, the Keystore
