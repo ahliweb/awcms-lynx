@@ -6,7 +6,7 @@ Template **klien aplikasi LynxJS / ReactLynx** keluarga AWCMS: satu basis kode R
 
 Repositori ini adalah "repositori aplikasi persona terpisah" yang diminta oleh awcms ADR-0146 dan awcms-one ADR-0050: backend tetap bebas dari Lynx, dan sebuah produk turunan dimulai dari sini, bukan dari proyek `create-lynx` yang kosong ([ADR-0001](docs/adr/0001-awcms-lynx-is-the-persona-app-template-repository.md)).
 
-> **Status:** fondasi template. Klien API, kontrak host, UI bersama, bundle Lynx dan Web, host Web, serta host desktop dapat dibangun dan diuji di CI; host native di bawah `hosts/` merupakan sumber referensi yang akan dikompilasi oleh produk turunan dalam proof of concept (PoC) masing-masing. [`docs/status.md`](docs/status.md) mencantumkan apa yang telah diverifikasi untuk setiap target.
+> **Status:** fondasi template. Klien API, kontrak host, UI bersama, bundle Lynx dan Web, host Web, serta host desktop dapat dibangun dan diuji di CI; host Android di `hosts/android` dapat di-build, di-lint, dan lolos vektor kontrak di CI (belum pernah dijalankan di perangkat); host iOS dan HarmonyOS merupakan sumber referensi yang akan dikompilasi oleh produk turunan dalam proof of concept (PoC) masing-masing. [`docs/status.md`](docs/status.md) mencantumkan apa yang telah diverifikasi untuk setiap target.
 
 ## Yang Anda dapatkan
 

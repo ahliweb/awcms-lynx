@@ -9,5 +9,6 @@
 | [0003](0003-one-host-bridge-contract-for-every-lynx-host.md) | Satu kontrak host-bridge untuk setiap host Lynx | Diterima |
 | [0004](0004-session-tokens-live-in-host-secure-storage.md) | Token sesi disimpan di secure storage host, tidak pernah di dalam bundle | Diterima |
 | [0005](0005-correlation-id-is-optional-on-the-web-target.md) | `X-Correlation-ID` opsional di target Web; aturan hanya-proxy dipertahankan | Diterima |
+| [0006](0006-android-host-is-a-gradle-project-built-in-ci.md) | Host Android adalah proyek Gradle yang di-build, di-lint, dan diuji unit oleh CI | Diusulkan |
 
 ADR baru mengambil nomor berikutnya, menyatakan konteks, keputusan, opsi yang dibandingkan (kelebihan dan kekurangan, keamanan, performa, maintainability, skalabilitas, aksesibilitas, SEO, UI/UX, kompatibilitas, kompleksitas operasional, dan dampak jangka panjang) serta konsekuensinya, dan ditambahkan ke tabel ini serta ke [`README.id.md`](README.id.md) dalam perubahan yang sama.

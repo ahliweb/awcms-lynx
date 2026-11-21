@@ -9,7 +9,7 @@ answer the host-bridge contract. Everything else is the bundle's job.
 hosts/
   README.md                    this file
   contract-test-vectors.json   request/reply vectors replayed by a native unit test on each platform
-  android/   AwcmsHostBridgeModule.kt  KeystoreSecureStore.kt  AwcmsLynxHost.kt  proguard-rules.pro  README.md
+  android/   Gradle project (app/, wrapper) + AwcmsHostBridgeModule.kt  KeystoreSecureStore.kt  AwcmsLynxHost.kt  proguard-rules.pro  README.md
   ios/       AwcmsHostBridgeModule.swift  KeychainSecureStore.swift  AwcmsLynxHost.swift  Podfile.snippet  README.md
   harmony/   AwcmsHostBridgeModule.ets  HuksSecureStore.ets  AwcmsLynxHost.ets  oh-package.json5.snippet  README.md
 ```
@@ -19,19 +19,19 @@ keep that notice when you copy them into a product repo (the repo itself is MIT)
 
 ## STATUS — read this first
 
-**These are reference sources, not a compiled, tested product.** They are not built by this repo's CI
-(no Android SDK, Xcode or DevEco toolchain there), have never been run on a device, and were written
-against the official empty host projects and the Lynx documentation only. Every API use that the
-docs do not pin down is marked `VERIFY:` in the source and listed at the bottom of each platform README.
-Treat the first build as a proof of concept: **verify in the ADR-0050 D6 / ADR-0146 §5 PoC** (build
-each host against the pinned Lynx version, replay `contract-test-vectors.json`, then run the release
-checklist below on real devices) before anything here is called supported. HarmonyOS carries the most
-uncertainty; iOS second.
+**Android is a Gradle project that CI builds, lints and unit-tests** (ADR-0006): it compiles against Lynx 4.1.0 and
+passes the contract vectors on the JVM. It has never been run on a device. **iOS and HarmonyOS are reference
+sources, not compiled or tested here** (no Xcode or DevEco toolchain in CI), written against the official empty
+host projects and the Lynx documentation only. Every API use that the docs do not pin down is marked `VERIFY:` in
+the source and listed at the bottom of each platform README (Android's list carries the build results).
+Treat the first device run as a proof of concept: **verify in the ADR-0050 D6 / ADR-0146 §5 PoC** (replay
+`contract-test-vectors.json` against the real secure store, then run the release checklist below on real
+devices) before anything here is called supported. HarmonyOS carries the most uncertainty; iOS second.
 
 Version note: the official sample projects pin different Lynx versions (Android 3.8.0, Harmony 3.8.1,
 iOS pods 4.1.0), the Harmony guide says 4.0.0, and the docs' `version.json` says 4.1.0 / PrimJS 4.1.1.
-Pick one Lynx version for all three hosts and for the `@lynx-js/*` JS packages, then re-check the
-`VERIFY` items against that version.
+Android is pinned to 4.1.0 / PrimJS 4.1.1. Pick one Lynx version for all three hosts and for the `@lynx-js/*`
+JS packages, then re-check the `VERIFY` items of iOS and HarmonyOS against that version.
 
 ## The host-bridge contract
 
@@ -183,7 +183,7 @@ Common
 Android
 - [ ] Signing: Play App Signing + upload key; keystore/credentials not in the repo.
 - [ ] `isMinifyEnabled = true`, `proguard-rules.pro` has the Lynx block **and** `hosts/android/proguard-rules.pro`; test `call` works in the release build (obfuscation breaks reflection silently).
-- [ ] `minSdk 24 / targetSdk & compileSdk 34` (sample values; Keystore AES-GCM needs 23+) — re-check against Play's current target requirement.
+- [ ] `minSdk 24 / targetSdk & compileSdk 36` (the verified values; Keystore AES-GCM needs 23+) — re-check against Play's current target requirement.
 - [ ] `allowBackup="false"` or the rules exclude `awcms_lynx_secure.xml`; `usesCleartextTraffic="false"`; debug-only network security config for the dev server.
 - [ ] Manifest: only `INTERNET` (+ `POST_NOTIFICATIONS` when push ships); launcher Activity is the only exported component.
 

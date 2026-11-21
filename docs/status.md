@@ -1,6 +1,6 @@
 # Status — what is verified, per target
 
-Last updated 20 November 2026. "Verified" means it was run in this repository's environment (Linux, Bun 1.4.4, Node 22.22) or CI; everything else is labelled. A derived product copies this page and fills in its own proof-of-concept results (awcms-one ADR-0050 D6, awcms ADR-0146 §5).
+Last updated 21 November 2026. "Verified" means it was run in this repository's environment (Linux, Bun 1.4.4, Node 22.22) or CI; everything else is labelled. A derived product copies this page and fills in its own proof-of-concept results (awcms-one ADR-0050 D6, awcms ADR-0146 §5).
 
 ## Building blocks
 
@@ -19,14 +19,14 @@ Last updated 20 November 2026. "Verified" means it was run in this repository's 
 | Lynx bundle (`main.lynx.bundle`) | ✅ `bun run build:mobile` | ✅ loaded by the real Lynxtron runtime (headless) | on a device in Lynx Explorer |
 | Web (`main.web.bundle` + `apps/web`) | ✅ `bun run build` | ✅ Chromium under the production CSP: UI rendered, host bridge answered | Safari, Firefox; real Caddy/nginx; a live backend behind the proxy |
 | Desktop (Lynxtron, macOS/Windows) | ✅ `bun run build:desktop` | ✅ headless Lynxtron run on Linux answered `app.info`/`secureStorage` | windowed run, `dev`, `pack`, signing — needs macOS/Windows |
-| Android host | ⬜ reference sources | ⬜ | compile against the pinned Lynx version, vectors in JUnit, device run (`hosts/android/README.md` VERIFY list) |
+| Android host | ✅ `./gradlew assembleDebug lintDebug` in `hosts/android` (Lynx 4.1.0, AGP 8.9.1, Gradle 8.13), CI job `android` | ⬜ the 74 vectors pass in JUnit on the JVM (`testDebugUnitTest`); not run on a device | device or emulator run, `KeystoreSecureStore` against the vectors, release/R8 build, signing (`hosts/android/README.md` VERIFY list) |
 | iOS host | ⬜ reference sources | ⬜ | same with XCTest (`hosts/ios/README.md`) |
 | HarmonyOS host | ⬜ reference sources | ⬜ | same with hypium (`hosts/harmony/README.md`); most uncertainty |
 
 ## Known limits
 
-- **Lynx versions.** JS packages: `@lynx-js/react` 0.129.2, `@lynx-js/rspeedy` 0.18.5, `@lynx-js/web-core` 0.26.5, Lynxtron 0.0.30. The official native samples pin Lynx 3.8.x (Android/Harmony) while docs and Explorer are at 4.x; a product picks one engine version for all native hosts.
-- **Session storage**: hardware-backed only on the native hosts (once compiled); desktop uses an owner-only file (`app-file`, Lynxtron 0.0.30 has no keyring API); the Web uses browser storage.
+- **Lynx versions.** JS packages: `@lynx-js/react` 0.129.2, `@lynx-js/rspeedy` 0.18.5, `@lynx-js/web-core` 0.26.5, Lynxtron 0.0.30. The Android host is built against Lynx 4.1.0 / PrimJS 4.1.1 (ADR-0006); the official Harmony sample pins 3.8.x while docs and Explorer are at 4.x; a product picks one engine version for all native hosts.
+- **Session storage**: hardware-backed only on the native hosts (not yet run on a device); desktop uses an owner-only file (`app-file`, Lynxtron 0.0.30 has no keyring API); the Web uses browser storage.
 - **Backend gaps** that keep a persona app at PoC grade are listed in [`backend-integration.md`](backend-integration.md#gaps); the 20 November 2026 re-check, with the classification of each and the finding that no test here touches a live backend, is [`contract-validation-2026-11.md`](contract-validation-2026-11.md).
 - **Not in v1**: deep links, push token retrieval, camera/location/barcode, offline cache — each needs a host-contract bump (ADR-0003 consequences).
 

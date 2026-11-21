@@ -134,13 +134,11 @@ object AwcmsLynxHost {
         val view = builder.build(activity)
 
         // LynxLoadMeta.Builder: lynx-load-meta.mdx. `url` is handed to the template provider.
-        val meta = LynxLoadMeta.Builder()
-            .setUrl(bundle)
-            .setGlobalProps(TemplateData.fromMap(config.toGlobalProps())) // template-data/from-map.mdx
-            .build()
-        // VERIFY: the sample (Lynx 3.8) calls renderTemplateUrl(uri, ""); the 4.x docs
-        // describe loadTemplate(LynxLoadMeta). Confirm against the pinned SDK version.
-        view.loadTemplate(meta)
+        // Verified on Lynx 4.1.0: the setters return void, so they cannot be chained.
+        val metaBuilder = LynxLoadMeta.Builder()
+        metaBuilder.setUrl(bundle)
+        metaBuilder.setGlobalProps(TemplateData.fromMap(config.toGlobalProps())) // template-data/from-map.mdx
+        view.loadTemplate(metaBuilder.build())
         return view
     }
 

@@ -10,7 +10,7 @@ One source, six shippable targets. Each target is a **host** plus the bundle it 
 
 | Target | Host | Artifact | Steps | Detail |
 | --- | --- | --- | --- | --- |
-| Android | `hosts/android` (Kotlin, LynxView) | APK / AAB with `main.lynx.bundle` in assets | adopt the host into an Android project created from `lynx-family/integrating-lynx-demo-projects`, copy the bundle into `assets/`, sign, upload to Play | [`hosts/android/README.md`](../hosts/android/README.md) |
+| Android | `hosts/android` (Kotlin, LynxView) | APK / AAB with `main.lynx.bundle` in assets | `bun run build:mobile`, then `./gradlew assembleRelease`/`bundleRelease` in `hosts/android` (the Gradle task copies the bundle into the assets; rename the application id, add signing and R8 rules first — only the debug build is verified); upload to Play | [`hosts/android/README.md`](../hosts/android/README.md) |
 | iOS | `hosts/ios` (Swift, LynxView via CocoaPods) | IPA with the bundle as a resource | same, from the Swift demo project; signing, App Store Connect | [`hosts/ios/README.md`](../hosts/ios/README.md) |
 | HarmonyOS | `hosts/harmony` (ArkTS) | HAP with the bundle in `rawfile` | same, from the Harmony demo project; DevEco signing, AppGallery | [`hosts/harmony/README.md`](../hosts/harmony/README.md) |
 | Web | `apps/web` (`<lynx-view>`) | `apps/web/dist/` static files | `bun run build`; serve behind a reverse proxy that forwards `/api` and `/feed.json` to the backend, with the CSP and headers in `apps/web/deploy/` | [`apps/web/README.md`](../apps/web/README.md) |

@@ -127,7 +127,7 @@ class KeystoreSecureStore(
     private fun decrypt(key: String, stored: String): String {
         require(stored.startsWith(VERSION_PREFIX)) { "Unknown storage format" }
         val blob = Base64.decode(stored.removePrefix(VERSION_PREFIX), Base64.NO_WRAP)
-        require(blob.size > IV_BYTES + TAG_BITS / 8) { "Truncated blob" }
+        require(isCompleteBlob(blob.size)) { "Truncated blob" }
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(
             Cipher.DECRYPT_MODE,
@@ -185,6 +185,11 @@ class KeystoreSecureStore(
         private const val ANDROID_KEYSTORE = "AndroidKeyStore"
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
         private const val IV_BYTES = 12
+        /**
+         * IV + GCM tag is the smallest valid blob: it is what an EMPTY value encrypts to
+         * (contract vector `storage.empty-value`), so the bound is inclusive.
+         */
+        internal fun isCompleteBlob(size: Int): Boolean = size >= IV_BYTES + TAG_BITS / 8
         private const val TAG_BITS = 128
         private const val VERSION_PREFIX = "v1."
         private const val AAD_PREFIX = "awcms-lynx/secure-store/v1|"
