@@ -12,7 +12,7 @@ Satu sumber, enam target yang dapat dikirim. Setiap target terdiri dari **host**
 
 | Target | Host | Artifact | Langkah | Detail |
 | --- | --- | --- | --- | --- |
-| Android | `hosts/android` (Kotlin, LynxView) | APK / AAB dengan `main.lynx.bundle` di assets | adopsi host ke dalam proyek Android yang dibuat dari `lynx-family/integrating-lynx-demo-projects`, salin bundle ke `assets/`, lakukan signing, unggah ke Play | [`hosts/android/README.md`](../hosts/android/README.md) |
+| Android | `hosts/android` (Kotlin, LynxView) | APK / AAB dengan `main.lynx.bundle` di assets | `bun run build:mobile`, lalu `./gradlew assembleRelease`/`bundleRelease` di `hosts/android` (task Gradle menyalin bundle ke assets; ganti application id, tambahkan signing dan aturan R8 lebih dulu — hanya build debug yang terverifikasi); unggah ke Play | [`hosts/android/README.md`](../hosts/android/README.md) |
 | iOS | `hosts/ios` (Swift, LynxView via CocoaPods) | IPA dengan bundle sebagai resource | sama, dari proyek demo Swift; signing, App Store Connect | [`hosts/ios/README.md`](../hosts/ios/README.md) |
 | HarmonyOS | `hosts/harmony` (ArkTS) | HAP dengan bundle di `rawfile` | sama, dari proyek demo Harmony; signing DevEco, AppGallery | [`hosts/harmony/README.md`](../hosts/harmony/README.md) |
 | Web | `apps/web` (`<lynx-view>`) | file statis `apps/web/dist/` | `bun run build`; sajikan di balik reverse proxy yang meneruskan `/api` dan `/feed.json` ke backend, dengan CSP dan header di `apps/web/deploy/` | [`apps/web/README.md`](../apps/web/README.md) |

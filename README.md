@@ -6,7 +6,7 @@ The AWCMS family's **LynxJS / ReactLynx client-app template**: one ReactLynx cod
 
 It is the "separate persona-app repository" that awcms ADR-0146 and awcms-one ADR-0050 call for: the backends stay free of Lynx, and a derived product starts here instead of from an empty `create-lynx` project ([ADR-0001](docs/adr/0001-awcms-lynx-is-the-persona-app-template-repository.md)).
 
-> **Status:** template foundation. The API client, host contract, shared UI, Lynx and Web bundles, Web host and desktop host build and are tested in CI; the native hosts under `hosts/` are reference sources a derived product compiles in its own proof of concept. [`docs/status.md`](docs/status.md) lists what is verified per target.
+> **Status:** template foundation. The API client, host contract, shared UI, Lynx and Web bundles, Web host and desktop host build and are tested in CI; the Android host under `hosts/android` builds, lints and passes the contract vectors in CI (never run on a device); the iOS and HarmonyOS hosts are reference sources a derived product compiles in its own proof of concept. [`docs/status.md`](docs/status.md) lists what is verified per target.
 
 ## What you get
 

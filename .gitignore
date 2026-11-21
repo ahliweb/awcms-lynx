@@ -28,3 +28,4 @@ hosts/**/local.properties
 .vscode/*
 !.vscode/extensions.json
 .idea
+hosts/**/.kotlin/
