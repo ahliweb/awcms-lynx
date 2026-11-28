@@ -14,6 +14,7 @@
 | [`fastplaz-concepts.md`](fastplaz-concepts.md) | you evaluate the FastPlaz-derived proposal for per-target host build diagnostics: boundaries, six scenarios, acceptance rubric (research only, proposed) |
 | [`status.md`](status.md) | you need to know what is verified, per target, and what is not |
 | [`carikbot-conversation-reference.md`](carikbot-conversation-reference.md) | you evaluate typed menu/form/handoff conversation rendering for persona clients: candidate contract, threats, tests (research only, proposed) |
+| [`research-ai-assisted-design-evidence-2026-11-28.md`](research-ai-assisted-design-evidence-2026-11-28.md) | you evaluate AI-assisted design and specification evidence for the client-only persona template: sources with verification status, pilot scope, evidence contract, GitHub Projects coordination (research only, proposed) |
 | [`adr/`](adr/README.md) | you want to know why something is the way it is |
 | [`../hosts/README.md`](../hosts/README.md) | you build a native host |
 

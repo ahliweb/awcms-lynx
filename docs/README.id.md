@@ -16,6 +16,7 @@
 | [`fastplaz-concepts.md`](fastplaz-concepts.md) | Anda menilai usulan diagnostik build host per target yang diturunkan dari FastPlaz: batas, enam skenario, rubrik penerimaan (riset saja, usulan) |
 | [`status.md`](status.md) | Anda perlu tahu apa yang sudah terverifikasi per target dan apa yang belum |
 | [`carikbot-conversation-reference.md`](carikbot-conversation-reference.md) | Anda menilai rendering percakapan menu/form/handoff bertipe untuk klien persona: kontrak kandidat, ancaman, tes (riset saja, usulan) |
+| [`research-ai-assisted-design-evidence-2026-11-28.md`](research-ai-assisted-design-evidence-2026-11-28.md) | Anda menilai bukti desain dan spesifikasi berbantuan AI untuk templat persona khusus klien: sumber beserta status verifikasi, cakupan pilot, kontrak bukti, koordinasi GitHub Projects (riset saja, usulan) |
 | [`adr/`](adr/README.md) | Anda ingin tahu mengapa sesuatu dibuat seperti itu |
 | [`../hosts/README.md`](../hosts/README.md) | Anda membangun host native |
 
